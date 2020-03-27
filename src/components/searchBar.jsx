@@ -1,35 +1,50 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+
+
 class SearchBar extends Component {
+
+
     state = {
+
         searchString: ""
+
     }
 
     constructor(props){
+
         super(props);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+
     }
+
     handleChange(event) {
         this.setState({searchString: event.target.value});
     }
+
     handleSubmit(){
+
         //handle search
         this.sendData("Gabriele")
         console.log(this.state.searchString);
+
     }
 
-    async sendData(data){   
-        
+    async sendData(data){
+
         const response = await axios.post(
             'localhost:3000/',
             { example: 'data' },
             { headers: { 'Content-Type': 'application/json' } }
           )
     }
-    render() { 
-        return ( 
+
+
+    render() {
+
+        return (
             <React.Fragment>
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                         <form className="form-inline my-2 my-lg-0">
@@ -39,7 +54,11 @@ class SearchBar extends Component {
                 </nav>
             </React.Fragment>
          );
+         
     }
+
+
+
 }
- 
+
 export default SearchBar;

@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-class LoginForm extends Component {
+class SignUpForm extends Component {
 
+    state = {
+        email: "",
+        password: ""
+     }
 
     constructor(props){
-
         super(props);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeOnEmail = this.handleChangeOnEmail.bind(this);
         this.handleChangeOnPassword = this.handleChangeOnPassword.bind(this);
-
-    }
-
-    state = {
-
-        email: "",
-        password: ""
-
     }
 
     handleChangeOnEmail(event) {
@@ -47,7 +42,7 @@ class LoginForm extends Component {
 
         return (
             <form>
-                <b>Login</b>
+                <b>Signup</b>
                 <div className="form-group">
                     <label for="exampleInputEmail1">Email address</label>
                     <input type="email" className="form-control" value= {this.state.email} onChange={this.handleChangeOnEmail} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>
@@ -73,4 +68,4 @@ class LoginForm extends Component {
 
 }
 
-export default LoginForm;
+export default SignUpForm;
