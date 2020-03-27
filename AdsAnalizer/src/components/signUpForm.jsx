@@ -4,6 +4,8 @@ import axios from 'axios';
 class SignUpForm extends Component {
 
     state = {
+        username: "",
+        phoneNumber: "",
         email: "",
         password: ""
      }
@@ -12,28 +14,47 @@ class SignUpForm extends Component {
         super(props);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChangeOnEmail = this.handleChangeOnEmail.bind(this);
-        this.handleChangeOnPassword = this.handleChangeOnPassword.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.refUsernameField = React.createRef();
+        this.refPhoneNumberField = React.createRef();
+        this.refEmailField = React.createRef();
+        this.refPasswordField = React.createRef();
     }
 
-    handleChangeOnEmail(event) {
-        this.setState({email: event.target.value});
+    handleChange(event) {
+        switch(event.target){
+            case this.refUsernameField.current:
+                this.setState({username: event.target.value});
+                break;
+            case this.refPhoneNumberField.current:
+                this.setState({phoneNumber: event.target.value});
+                break;
+            case this.refEmailField.current:
+                this.setState({email: event.target.value});
+                break;
+            case this.refPasswordField.current:
+                this.setState({password: event.target.value});
+            
+        }
     }
-
-    handleChangeOnPassword(event) {
-        this.setState({password: event.target.value});
-    }
-
     handleSubmit(){
-        const form = new FormData();
-        form.set('email', this.state.email);
-        form.set('password', this.state.password);
-        this.sendData(form);
+
+        let newUser = {
+            "name": this.state.username,
+            "phone": this.state.phoneNumber,
+            "email": this.state.email,
+            "pass": this.state.password
+        }
+        this.sendData(newUser);
     }
 
     async sendData(data){
-        axios.post('localhost:3000', data, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+        axios.post('http://127.0.0.1:3001/users', data, {
+            headers: { 'Content-Type': 'application/json' },
+          }).then((response) =>{
+              if(response.data == "ok"){
+                  this.props.doSignUp();
+              }
           })
     }
 
@@ -44,19 +65,29 @@ class SignUpForm extends Component {
             <form>
                 <b>Signup</b>
                 <div className="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" className="form-control" value= {this.state.email} onChange={this.handleChangeOnEmail} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>
+                    <label for="username">Username</label>
+                    <input ref={ this.refUsernameField } type="text" value={this.state.username} onChange={this.handleChange} className="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter Username"/>
+                    
+                </div>
+                <div className="form-group">
+                    <label for="email">Email address</label>
+                    <input ref= { this.refEmailField } type="text" value={this.state.email} onChange={this.handleChange} className="form-control"   id="email" aria-describedby="emailHelp" placeholder="Enter Enter email"/>
                     <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" className="form-control" value= {this.state.password} onChange={this.handleChangeOnPassword}  id="exampleInputPassword1" placeholder="Password"/>
+                <div className="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input  ref= { this.refPhoneNumberField } type="text" value={this.state.phoneNumber} onChange={this.handleChange} className="form-control"  id="phone" aria-describedby="emailHelp" placeholder="Enter Phone Number"/>
+                   
                 </div>
-                <div class="form-check">
+                <div className="form-group">
+                    <label for="pass">Password</label>
+                    <input ref= { this.refPasswordField } type="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="pass" placeholder="Password"/>
+                </div>
+                <div className="form-check">
                     <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                    <label className="form-check-label" for="exampleCheck1">Check me out</label>
                 </div>
-                <button type="submit" onClick={this.handleSubmit} class="btn btn-primary">Submit</button>
+                <button onClick= {e => {e.preventDefault(); this.handleSubmit()}} className="btn btn-primary">Submit</button>
             </form>
 
 

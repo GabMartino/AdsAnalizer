@@ -40,6 +40,22 @@ function fieldsSearchBarHandler(req, res){
 
 }
 
+app.post('/users', registerNewUserHandler )
+
+
+function registerNewUserHandler(req, res){
+    console.log(req.body);
+    res.send("ok");
+}
+
+app.get('/ads', handleAdsRequest )
+
+function handleAdsRequest(req, res){
+    let ads = [];
+    ads.push('[{"_id":"5e7a8605053d37588fbe9206","advertiser":{"phone":"0000000000","name":"Andonio","userId":"0"},"geo":{"province":{"id":"069","shortName":"CH","value":"Chieti"},"town":{"value":"Casalbordino"},"region":{"id":"13","value":"Abruzzo"}},"date":"2020-03-24 23:13:25","features":[{"name":"Prezzo","value":{"$numberInt":"200"}},{"name":"Tipologia","value":"Superfiga"}],"subject":"Maglia figa","body":"maglia figa ma brutta, ma troppo figa, che la mia maglia � pi� figa della tua","category":{"id":"16","label":"maglia","parentId":"13"}},{"_id":"5e7a8605053d37588fbe9205","advertiser":{"phone":"0000000000","name":"Andonio","userId":"0"},"geo":{"province":{"id":"069","shortName":"CH","value":"Chieti"},"town":{"value":"Casalbordino"},"region":{"id":"13","value":"Abruzzo"}},"date":"2020-03-24 23:13:25","features":[{"name":"Prezzo","value":{"$numberInt":"300"}},{"name":"Tipologia","value":"Superfiga"}],"subject":"Scarpe fighe","body":"scarpe fighe fighe, ma troppo fighe, che le mie sono pi� fighe delle tue","category":{"id":"16","label":"scarpe","parentId":"13"}}]');
+    console.log(ads);
+    res.json(JSON.parse(ads));
+}
 
 //STARTING POINT
 app.listen(port, () => {
