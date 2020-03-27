@@ -1,0 +1,17 @@
+{"_id":"5e7a8605053d37588fbe9205","advertiser":{"phone":"0000000000","name":"Andonio","userId":"0"},"geo":{"province":{"id":"069","shortName":"CH","value":"Chieti"},"town":{"value":"Casalbordino"},"region":{"id":"13","value":"Abruzzo"}},"date":"2020-03-24 23:13:25","features":[{"name":"Prezzo","value":{"$numberInt":"300"}},{"name":"Tipologia","value":"Superfiga"}],"subject":"Scarpe fighe","body":"scarpe fighe fighe, ma troppo fighe, che le mie sono più fighe delle tue","category":{"id":"16","label":"scarpe","parentId":"13"}}
+{"_id":"5e7a8605053d37588fbe9206","advertiser":{"phone":"0000000000","name":"Andonio","userId":"0"},"geo":{"province":{"id":"069","shortName":"CH","value":"Chieti"},"town":{"value":"Casalbordino"},"region":{"id":"13","value":"Abruzzo"}},"date":"2020-03-24 23:13:25","features":[{"name":"Prezzo","value":{"$numberInt":"200"}},{"name":"Tipologia","value":"Superfiga"}],"subject":"Maglia figa","body":"maglia figa ma brutta, ma troppo figa, che la mia maglia è più figa della tua","category":{"id":"16","label":"maglia","parentId":"13"}}
+{"_id":"13","name":"Per la casa e la persona","parentId":"13"}
+{"_id":"16","name":"Abbigliamento e accessori","parentId":"13","features":[{"Name":"Genere","Surname":"list","values":["Unisex","Donna","Uomo"]},{"Name":"Prezzo","Surname":"number"}]}
+{"_id":"13","name":"Abruzzo","level":{"$numberInt":"0"},"neighbors":["11","12","14"]}
+{"_id":"069","name":"Chieti","level":{"$numberInt":"1"},"regionId":"13","shortName":"CH"}
+{"_id":"068","name":"Pescara","level":{"$numberInt":"1"},"regionId":"13","shortName":"PE"}
+{"_id":"0","name":"Andonio","password":"1234","email":"a@a.it","telephone":"0000000000","admin":true}
+{"_id":"1","name":"Gabriele","password":"1234","email":"b@a.it","telephone":"0000000001","admin":true}
+{"_id":"5e7a8605053d37588fbe9203","name":"Alice","password":"1234","email":"alice@a.it","telephone":"0000000004"}
+{"_id":"5e7a86e1e9b8253faa0f49b6","name":"Bob","password":"1234","email":"bob@a.it","telephone":"0000000004"}
+
+
+
+
+
+
