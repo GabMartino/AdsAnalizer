@@ -87,7 +87,7 @@ class SignUpForm extends Component {
                     <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
                     <label className="form-check-label" for="exampleCheck1">Check me out</label>
                 </div>
-                <button onClick= {e => {e.preventDefault(); this.handleSubmit()}} className="btn btn-primary">Submit</button>
+                <button onClick= {e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
             </form>
 
 

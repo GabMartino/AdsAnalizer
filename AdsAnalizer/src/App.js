@@ -80,6 +80,7 @@ class App extends Component {
     }
 
     doSignUp(  ){
+        this.showSignUp( false );
         console.log( "made it to sign up!" )
     }
 
