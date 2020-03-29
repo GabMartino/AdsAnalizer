@@ -8,7 +8,6 @@ import LoginForm from './components/loginForm';
 import SignUpForm from './components/signUpForm';
 
 
-
 class App extends Component {
 
 
@@ -84,13 +83,40 @@ class App extends Component {
         console.log( "made it to sign up!" )
     }
 
+    doLogOut(){
+        this.setState(
+            {
+                userIsLogged: false
+            }
+       );
+    }
     render() {
 
         return (
             <div className={ "app" }>
-            <NavBar showLogIn={ this.showLogIn.bind(this) } showSignUp={ this.showSignUp.bind(this) }/>
+            <NavBar 
+                    showLogIn={ this.showLogIn.bind(this) } 
+                    showSignUp={ this.showSignUp.bind(this) }
+                    logOut= {this.doLogOut.bind(this) }
+                    showLogInButton= { !this.state.userIsLogged }
+                    showSignUpButton={ !this.state.userIsLogged  }
+                    showLogoutButton={ this.state.userIsLogged }
+            />
             <SearchBar/>
             <div className="container" style={{ maxWidth: "100%" }}>
+                <nav className="navbar navbar-expand-lg navbar-light bg-light" style={{ width: "100%" }}>
+                    <div className="row" style={{width: "100%"}}>
+                        <div className="col">
+                        </div>
+                        <div className="col-8">
+                        </div>
+                        <div className="col">
+                            <button className="btn btn-primary m-2" type="button"  aria-expanded="false" aria-controls="collapseExample">
+                                Show Statistics
+                            </button>
+                        </div>
+                    </div>
+                </nav>
               <div className="row">
                 <div className="col">
                 </div>
@@ -102,6 +128,8 @@ class App extends Component {
                 </div>
                 <div ref={ this.closeSignUpRef } className={ this.state.showSignUp ? "form_wrapper show_form" : "form_wrapper" }>
                     <SignUpForm  doSignUp={ this.doSignUp.bind(this) }></SignUpForm>
+                </div>
+                <div className="col">
                 </div>
               </div>
             </div>

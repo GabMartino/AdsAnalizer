@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 class NavBar extends Component {
 
     state = {
-
+        showLogInButton: true,
+        showSignUpButton: true
 
     }
 
@@ -15,7 +16,7 @@ class NavBar extends Component {
         //refs
 		this.logInRef = React.createRef();
         this.signUpRef = React.createRef();
-
+        this.logoutRef = React.createRef();
 
     }
 
@@ -35,6 +36,10 @@ class NavBar extends Component {
             this.props.showSignUp( true );
         } );
 
+        this.logoutRef.current.addEventListener( "click", () => {
+            this.props.logOut( true );
+        } );
+
     }
 
     render() {
@@ -43,11 +48,14 @@ class NavBar extends Component {
             <nav className="navbar navbar-light bg-light">
                 <span className="navbar-brand mb-0 h1">Navbar</span>
                 <p>
-                    <button ref={ this.logInRef } className="btn btn-primary m-2" type="button"  aria-expanded="false" aria-controls="collapseExample">
+                    <button ref={ this.logInRef } className={this.props.showLogInButton ? "btn btn-primary m-2" : "btn btn-primary m-2 notDisplay"}  type="button"  aria-expanded="false" aria-controls="collapseExample">
                         Login
                     </button>
-                    <button ref={ this.signUpRef } className="btn btn-primary m-2" type="button"  aria-expanded="false" aria-controls="collapseExample">
+                    <button ref={ this.signUpRef } className={this.props.showSignUpButton ? "btn btn-primary m-2" : "btn btn-primary m-2 notDisplay"} type="button"  aria-expanded="false" aria-controls="collapseExample">
                         Signup
+                    </button>
+                    <button ref={ this.logoutRef } className={this.props.showLogoutButton ? "btn btn-primary m-2" : "btn btn-primary m-2 notDisplay"} type="button"  aria-expanded="false" aria-controls="collapseExample">
+                        Logout
                     </button>
 
                 </p>

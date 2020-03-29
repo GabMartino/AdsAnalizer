@@ -39,13 +39,14 @@ class SearchBar extends Component {
     }
 
     async fetchData(){
-        axios.get('http://127.0.0.1:3001/categories').then(
+        console.log()
+        axios.get('http://'+window.location.hostname+':3001/categories').then(
             (response) => {
                 this.setState({categories: response.data});
                 }
         );
 
-        axios.get('http://127.0.0.1:3001/geos/',{
+        axios.get('http://'+window.location.hostname+':3001/geos/',{
             params: {
                 val: 0
             }
@@ -94,7 +95,7 @@ class SearchBar extends Component {
         prop.name = event.target.name;
         this.setState({ selectedRegion: prop });
 
-        axios.get('http://127.0.0.1:3001/geos/',{
+        axios.get('http://'+window.location.hostname+':3001/geos/',{
             params: {
                 val: 13
             }

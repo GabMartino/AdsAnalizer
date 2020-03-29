@@ -44,7 +44,9 @@
 
 }
 
-
+.notDisplay{
+  display: none !important;
+}
 
 @keyframes App-logo-spin {
 

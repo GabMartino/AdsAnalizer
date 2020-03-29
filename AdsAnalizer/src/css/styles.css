@@ -5,7 +5,6 @@
 
 /* COMPONENTS */
 @import "./components/LogInForm.css";
-@import "./components/searchBar.css";
 
 /* PAGES */
 @import "./pages/App.css";

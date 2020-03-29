@@ -12,7 +12,7 @@ class Feed extends Component {
     }
 
     async fetchAds(){
-        axios.get('http://127.0.0.1:3001/ads').then(
+        axios.get('http://'+window.location.hostname+':3001/ads').then(
             (response) => {
                 this.setState({ads: response.data});
                 }
@@ -22,6 +22,7 @@ class Feed extends Component {
     render() { 
         return (  
             <div>
+                
                 { this.state.ads.map( ad => <Ad
                     body={ad.body}
                 />)

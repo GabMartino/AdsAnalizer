@@ -49,7 +49,7 @@ class SignUpForm extends Component {
     }
 
     async sendData(data){
-        axios.post('http://127.0.0.1:3001/users', data, {
+        axios.post('http://'+window.location.hostname+':3001/users', data, {
             headers: { 'Content-Type': 'application/json' },
           }).then((response) =>{
               if(response.data == "ok"){

@@ -37,7 +37,7 @@ class LoginForm extends Component {
     }
 
     async sendData(obj, data){
-        axios.post('http://127.0.0.1:3001/login', data, {
+        axios.post('http://'+window.location.hostname+':3001/login', data, {
             headers: { 'Content-Type': 'multipart/form-data' },
           }).then(function (response){
               if(response.data == "ok"){
