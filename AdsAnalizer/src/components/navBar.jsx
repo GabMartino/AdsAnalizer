@@ -45,8 +45,8 @@ class NavBar extends Component {
     render() {
 
         return (
-            <nav className="navbar navbar-light bg-light">
-                <span className="navbar-brand mb-0 h1">Navbar</span>
+            <nav className="navbar navbar-light">
+                <span className="navbar-brand mb-0 h1">AdsAnalizer</span>
                 <p>
                     <button ref={ this.logInRef } className={this.props.showLogInButton ? "btn btn-primary m-2" : "btn btn-primary m-2 notDisplay"}  type="button"  aria-expanded="false" aria-controls="collapseExample">
                         Login

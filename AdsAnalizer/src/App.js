@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 
 import logo from './logo.svg';
+import plus from './assets/icons/plus.png';
 import NavBar from './components/navBar';
 import Feed from './components/feed';
 import SearchBar from './components/searchBar';
 import LoginForm from './components/loginForm';
 import SignUpForm from './components/signUpForm';
+import AddPanel from './components/AddPanel';
 
 
 class App extends Component {
@@ -15,7 +17,8 @@ class App extends Component {
 
         showLogIn: false,
         showSignUp: false,
-        userIsLogged: false
+        userIsLogged: false,
+        showAdd: false
 
     }
 
@@ -26,6 +29,8 @@ class App extends Component {
         //refs
 		this.closeLogInRef = React.createRef();
         this.closeSignUpRef = React.createRef();
+        this.addRef = React.createRef();
+        this.closeAddRef = React.createRef();
 
     }
 
@@ -39,8 +44,8 @@ class App extends Component {
             if (this.closeLogInRef.current  === event.target) {
                 this.showLogIn( false );
             }
-            
-           
+
+
         } );
 
         this.closeSignUpRef.current.addEventListener( "click", (event) => {
@@ -48,6 +53,24 @@ class App extends Component {
                 this.showSignUp( false );
             }
         } );
+
+        this.addRef.current.addEventListener( "click", () => {
+            this.showAdd( true );
+        } );
+
+        this.closeAddRef.current.addEventListener( "click", (event) => {
+            if (this.closeAddRef.current  === event.target) {
+                this.showAdd( false );
+            }
+        } );
+
+    }
+
+    showAdd( show ){
+
+        this.setState({
+            showAdd: show
+        })
 
     }
 
@@ -94,45 +117,28 @@ class App extends Component {
 
         return (
             <div className={ "app" }>
-            <NavBar 
-                    showLogIn={ this.showLogIn.bind(this) } 
-                    showSignUp={ this.showSignUp.bind(this) }
-                    logOut= {this.doLogOut.bind(this) }
-                    showLogInButton= { !this.state.userIsLogged }
-                    showSignUpButton={ !this.state.userIsLogged  }
-                    showLogoutButton={ this.state.userIsLogged }
-            />
-            <SearchBar/>
-            <div className="container" style={{ maxWidth: "100%" }}>
-                <nav className="navbar navbar-expand-lg navbar-light bg-light" style={{ width: "100%" }}>
-                    <div className="row" style={{width: "100%"}}>
-                        <div className="col">
-                        </div>
-                        <div className="col-8">
-                        </div>
-                        <div className="col">
-                            <button className="btn btn-primary m-2" type="button"  aria-expanded="false" aria-controls="collapseExample">
-                                Show Statistics
-                            </button>
-                        </div>
-                    </div>
-                </nav>
-              <div className="row">
-                <div className="col">
-                </div>
-                <div className="col-8">
-                  <Feed></Feed>
-                </div>
+                <NavBar
+                        showLogIn={ this.showLogIn.bind(this) }
+                        showSignUp={ this.showSignUp.bind(this) }
+                        logOut= {this.doLogOut.bind(this) }
+                        showLogInButton= { !this.state.userIsLogged }
+                        showSignUpButton={ !this.state.userIsLogged  }
+                        showLogoutButton={ this.state.userIsLogged }
+                />
+                <SearchBar/>
+                <Feed></Feed>
                 <div ref={ this.closeLogInRef } className={ this.state.showLogIn ? "form_wrapper show_form" : "form_wrapper" }>
                   <LoginForm  doLogIn={ this.doLogIn.bind(this) }></LoginForm>
                 </div>
                 <div ref={ this.closeSignUpRef } className={ this.state.showSignUp ? "form_wrapper show_form" : "form_wrapper" }>
                     <SignUpForm  doSignUp={ this.doSignUp.bind(this) }></SignUpForm>
                 </div>
-                <div className="col">
+                <div ref={ this.closeAddRef } className={ this.state.showAdd ? "form_wrapper show_form" : "form_wrapper" }>
+                    <AddPanel />
                 </div>
-              </div>
-            </div>
+                <div ref={ this.addRef } class={ this.state.userIsLogged ? "add_button show" : "add_button" }>
+                    <img src={ plus } />
+                </div>
             </div>
         )
 

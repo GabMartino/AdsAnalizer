@@ -1,25 +1,34 @@
 import React, { Component } from 'react';
+import placeholder from '../assets/images/placeholder.png';
 
 
 class Ad extends Component {
-    state = { 
+    state = {
         src: "https://picsum.photos/200",
+        title: "Lorem ipsum",
         body: this.props.body
      }
     constructor(props){
         super(props);
     }
-    render() { 
-        return ( 
-            <div className="media m-2">
-                <img className="mr-3" src={this.state.src} alt="Generic placeholder image"/>
-                <div className="media-body">
-                    <h5 className="mt-0">Media heading</h5>
-                    {this.state.body}
+    render() {
+        return (
+            <div className="ad_tile">
+                <div className="img">
+                    <img src={ placeholder } alt="Generic placeholder image"/>
+                </div>
+                <div className="info">
+                    <div className="utils"></div>
+                    <div className="title">
+                        { this.state.title }
+                    </div>
+                    <div className="description">
+                        { this.state.body }
+                    </div>
                 </div>
             </div>
          );
     }
 }
- 
+
 export default Ad;

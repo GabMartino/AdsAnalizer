@@ -1,5 +1,10 @@
 .app {
-  text-align: center;
+
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    background: #b9e4c9;
+    z-index: 1;
 }
 
 .App-logo {
@@ -46,6 +51,58 @@
 
 .notDisplay{
   display: none !important;
+}
+
+main{
+
+    height: auto;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+}
+
+#feed{
+
+    height: auto;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 30px;
+
+}
+
+.add_button{
+
+    height: 70px;
+    width: 70px;
+    position: fixed;
+    bottom: 40px;
+    right: 50px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 70px;
+    background: #fd5523;
+    box-shadow: 0 16px 24px 2px rgba(0,0,0,0.14), 0 6px 30px 5px rgba(0,0,0,0.12), 0 8px 10px -7px rgba(0,0,0,0.2);
+    cursor: pointer;
+
+}
+
+.add_button.show{
+    display: flex;
+}
+
+.add_button img{
+
+    height: auto;
+    width: 25px;
+
 }
 
 @keyframes App-logo-spin {

@@ -5,6 +5,9 @@
 
 /* COMPONENTS */
 @import "./components/LogInForm.css";
+@import "./components/ad.css";
+@import "./components/navbar.css";
+
 
 /* PAGES */
 @import "./pages/App.css";
@@ -13,9 +16,37 @@
 
 
 /* FONTS */
-/*@font-face {
+@font-face {
 
-	font-family: ;
-	src: url(  );
+	font-family: "Cereal_Book";
+	src: url( "../assets/fonts/cereal/AirbnbCerealBook.ttf" );
 
-}*/
+}
+
+@font-face {
+
+	font-family: "Cereal_Medium";
+	src: url( "../assets/fonts/cereal/AirbnbCerealMedium.ttf" );
+
+}
+
+@font-face {
+
+	font-family: "Cereal_Bold";
+	src: url( "../assets/fonts/cereal/AirbnbCerealBold.ttf" );
+
+}
+
+@font-face {
+
+	font-family: "Cereal_ExtraBold";
+	src: url( "../assets/fonts/cereal/AirbnbCerealExtraBold.ttf" );
+
+}
+
+@font-face {
+
+	font-family: "Cereal_Black";
+	src: url( "../assets/fonts/cereal/AirbnbCerealBlack.ttf" );
+
+}

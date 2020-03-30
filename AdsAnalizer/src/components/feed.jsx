@@ -3,7 +3,7 @@ import Ad from './ad';
 import axios from 'axios';
 
 class Feed extends Component {
-    state = { 
+    state = {
         ads: []
     }
 
@@ -19,19 +19,20 @@ class Feed extends Component {
         );
     }
 
-    render() { 
-        return (  
-            <div>
-                
+    render() {
+        return (
+            <div id="feed">
+
                 { this.state.ads.map( ad => <Ad
                     body={ad.body}
                 />)
             }
+
             </div>
-            
+
 
         );
     }
 }
- 
+
 export default Feed;

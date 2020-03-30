@@ -69,7 +69,7 @@ class SearchBar extends Component {
                 break;
             case this.maxPriceField:
                 this.setState({maxPriceValue: event.target.value});
-                
+
         }
     }
 
@@ -87,7 +87,7 @@ class SearchBar extends Component {
         this.setState({ selectedProvince: prop });
 
     }
-    
+
     setRegion(event){
         event.preventDefault();
         let prop = {...this.state.selectedRegion};
@@ -110,7 +110,7 @@ class SearchBar extends Component {
     //HANDLE RESEARCH
     handleSearch(){
 
-        let linearizedResearchFields = "?[src="+this.state.searchString+"]"+ 
+        let linearizedResearchFields = "?[src="+this.state.searchString+"]"+
                                         "[&cat="+this.state.selectedCategory+"]"+
                                         "[&geo="+this.state.selectedGeo+"]"+
                                         "[&min="+this.state.minPriceValue+"]"+
@@ -133,30 +133,30 @@ class SearchBar extends Component {
 
         return (
             <React.Fragment>
-                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <nav className="navbar nav_2 navbar-expand-lg navbar-light">
                         <form className="form-inline my-2 my-lg-0">
                             <input ref={ this.searchField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Search" aria-label="Search"/>
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory.name ? this.state.selectedCategory.name : "Categories"}>
                             {   this.state.categories.map(
                                     category =>
-                                    <Dropdown.Item onClick={ this.setCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item> 
+                                    <Dropdown.Item onClick={ this.setCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
                                     )
                                 }
                             </DropdownButton>
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedRegion.name ? this.state.selectedRegion.name : "Regions"}>
                             {   this.state.regions.map(
                                     region =>
-                                    <Dropdown.Item onClick={ e => this.setRegion(e) } id={region._id} name={region.name}>{region.name}</Dropdown.Item> 
+                                    <Dropdown.Item onClick={ e => this.setRegion(e) } id={region._id} name={region.name}>{region.name}</Dropdown.Item>
                                     )
                                 }
-                            </DropdownButton> 
+                            </DropdownButton>
                             <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces ? "m-2" : "notDisplay" } title={this.state.selectedProvince.name ? this.state.selectedProvince.name : "Provinces"} >
                             {   this.state.provinces.map(
                                     province =>
-                                    <Dropdown.Item onClick={ this.setProvince } id={province._id} name={province.name}>{province.name} </Dropdown.Item> 
+                                    <Dropdown.Item onClick={ this.setProvince } id={province._id} name={province.name}>{province.name} </Dropdown.Item>
                                     )
                                 }
-                            </DropdownButton> 
+                            </DropdownButton>
                             <input ref={ this.minPriceField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Min" aria-label="Search"/>
                             <input ref={ this.maxPriceField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Max" aria-label="Search"/>
                             <button className="btn btn-outline-success my-2 my-sm-0" onClick={this.handleSearch} type="submit">Search</button>
@@ -164,7 +164,7 @@ class SearchBar extends Component {
                 </nav>
             </React.Fragment>
          );
-         
+
     }
 
 

@@ -1,0 +1,21 @@
+.navbar{
+
+	background: #356859 !important;
+	font-family: Cereal_Medium;
+
+}
+
+.navbar-brand{
+
+	font-family: Cereal_Black;
+	font-size: 1.7em !important;
+	opacity: 0.9;
+	color: rgba( 255, 255, 255, 1 ) !important;
+
+}
+
+.nav_2{
+
+	box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+
+}
