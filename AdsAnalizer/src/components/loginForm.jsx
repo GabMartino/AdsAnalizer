@@ -37,11 +37,13 @@ class LoginForm extends Component {
     }
 
     async sendData(obj, data){
-        axios.post('http://'+window.location.hostname+':3001/login', data, {
+        await axios.post('http://'+window.location.hostname+':3001/login', data, {
             headers: { 'Content-Type': 'multipart/form-data' },
           }).then(function (response){
               if(response.data == "ok"){
                 obj.props.doLogIn();
+              }else{
+                  alert("Username or Password wrong");
               }
             
           }).catch(function (error) {
@@ -68,7 +70,7 @@ class LoginForm extends Component {
                     <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
                     <label className="form-check-label" for="exampleCheck1">Check me out</label>
                 </div>
-                <button type="submit" onClick={this.handleSubmit} className="btn btn-primary">Submit</button>
+                <button type="submit" onClick= {e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
             </form>
 
 

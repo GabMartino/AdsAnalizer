@@ -49,9 +49,10 @@ class SignUpForm extends Component {
     }
 
     async sendData(data){
-        axios.post('http://'+window.location.hostname+':3001/users', data, {
+        await axios.post('http://'+window.location.hostname+':'+this.props.webServerPort+'/users', data, {
             headers: { 'Content-Type': 'application/json' },
           }).then((response) =>{
+              console.log(response)
               if(response.data == "ok"){
                   this.props.doSignUp();
               }

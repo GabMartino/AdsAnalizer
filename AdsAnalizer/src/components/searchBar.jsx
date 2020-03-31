@@ -39,14 +39,13 @@ class SearchBar extends Component {
     }
 
     async fetchData(){
-        console.log()
-        axios.get('http://'+window.location.hostname+':3001/categories').then(
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories').then(
             (response) => {
                 this.setState({categories: response.data});
                 }
         );
 
-        axios.get('http://'+window.location.hostname+':3001/geos/',{
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/',{
             params: {
                 val: 0
             }
@@ -61,13 +60,13 @@ class SearchBar extends Component {
 
     handleChange(event) {
         switch(event.target){
-            case this.searchField:
+            case this.searchField.current:
                 this.setState({searchString: event.target.value});
                 break;
-            case this.minPriceField:
+            case this.minPriceField.current:
                 this.setState({minPriceValue: event.target.value});
                 break;
-            case this.maxPriceField:
+            case this.maxPriceField.current:
                 this.setState({maxPriceValue: event.target.value});
 
         }
@@ -95,7 +94,7 @@ class SearchBar extends Component {
         prop.name = event.target.name;
         this.setState({ selectedRegion: prop });
 
-        axios.get('http://'+window.location.hostname+':3001/geos/',{
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/',{
             params: {
                 val: 13
             }
@@ -109,18 +108,21 @@ class SearchBar extends Component {
 
     //HANDLE RESEARCH
     handleSearch(){
-
-        let linearizedResearchFields = "?[src="+this.state.searchString+"]"+
-                                        "[&cat="+this.state.selectedCategory+"]"+
-                                        "[&geo="+this.state.selectedGeo+"]"+
-                                        "[&min="+this.state.minPriceValue+"]"+
-                                        "[&max="+this.state.maxPriceValue+"]";
+        let linearizedResearchFields = {
+            params: {
+                src: this.state.searchString,
+                cat: this.state.selectedCategory.id,
+                geo: this.state.selectedRegion.id,
+                min: this.state.minPriceValue,
+                max: this.state.maxPriceValue
+            }
+        }
         console.log(linearizedResearchFields);
         this.sendData(linearizedResearchFields);
     }
 
     async sendData(linearizedResearchFields){
-        axios.get('http://127.0.0.1:3001/categories'+ linearizedResearchFields).then(
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads', linearizedResearchFields).then(
             (response) => {
                 this.setState({categories: response.data});
                 console.log("oooooooook");
@@ -159,7 +161,7 @@ class SearchBar extends Component {
                             </DropdownButton>
                             <input ref={ this.minPriceField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Min" aria-label="Search"/>
                             <input ref={ this.maxPriceField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Max" aria-label="Search"/>
-                            <button className="btn btn-outline-success my-2 my-sm-0" onClick={this.handleSearch} type="submit">Search</button>
+                            <button className="btn btn-outline-success my-2 my-sm-0" onClick={e => {e.preventDefault();this.handleSearch()}} type="submit">Search</button>
                         </form>
                 </nav>
             </React.Fragment>

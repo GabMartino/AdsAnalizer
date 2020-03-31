@@ -12,7 +12,7 @@ class Feed extends Component {
     }
 
     async fetchAds(){
-        axios.get('http://'+window.location.hostname+':3001/ads').then(
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads').then(
             (response) => {
                 this.setState({ads: response.data});
                 }

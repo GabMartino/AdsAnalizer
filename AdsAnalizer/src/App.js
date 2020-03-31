@@ -12,7 +12,8 @@ import AddPanel from './components/AddPanel';
 
 class App extends Component {
 
-
+    
+    webServerPort = 809;
     state = {
 
         showLogIn: false,
@@ -124,14 +125,24 @@ class App extends Component {
                         showLogInButton= { !this.state.userIsLogged }
                         showSignUpButton={ !this.state.userIsLogged  }
                         showLogoutButton={ this.state.userIsLogged }
+                        webServerPort={ this.webServerPort }
                 />
-                <SearchBar/>
-                <Feed></Feed>
+                <SearchBar
+                    webServerPort={ this.webServerPort }
+                />
+                <Feed
+                    webServerPort={ this.webServerPort }
+                ></Feed>
                 <div ref={ this.closeLogInRef } className={ this.state.showLogIn ? "form_wrapper show_form" : "form_wrapper" }>
-                  <LoginForm  doLogIn={ this.doLogIn.bind(this) }></LoginForm>
+                  <LoginForm  doLogIn={ this.doLogIn.bind(this)}
+                            webServerPort={ this.webServerPort }>
+
+                    </LoginForm>
                 </div>
                 <div ref={ this.closeSignUpRef } className={ this.state.showSignUp ? "form_wrapper show_form" : "form_wrapper" }>
-                    <SignUpForm  doSignUp={ this.doSignUp.bind(this) }></SignUpForm>
+                    <SignUpForm  doSignUp={ this.doSignUp.bind(this) }
+                                webServerPort={ this.webServerPort }
+                    ></SignUpForm>
                 </div>
                 <div ref={ this.closeAddRef } className={ this.state.showAdd ? "form_wrapper show_form" : "form_wrapper" }>
                     <AddPanel />
