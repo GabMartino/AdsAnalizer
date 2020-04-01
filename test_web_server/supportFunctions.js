@@ -77,6 +77,7 @@ module.exports = {
     },
 
 
+
     handleAdsRequest: async function (req, res){
         console.log(req.query);    
         var query = {};
@@ -91,15 +92,6 @@ module.exports = {
                 
             };
         }
-        /*
-        */
-        /*
-        "body": /req.query.src/,
-            "category.id": req.query.cat,
-            "geo.region": req.query.geo,
-            "geo.province": req.query.geoprov,
-            "features[0].value": {$gte: req.query.min},
-        */
         console.log(query);
         var result = await sendDBRequest(adsDBHandler, query).catch(console.err);
         console.log(result);

@@ -18,7 +18,6 @@ const test = require('assert');
 
 app.post('/login', upload.array(), support.loginHandler )
 app.post('/users', upload.array(), support.signupHandler )
-app.get('/categories', support.fieldsSearchBarHandler )
 app.get('/ads', support.handleAdsRequest )
 app.get('/geos/', support.handleGeosRequests )
 
