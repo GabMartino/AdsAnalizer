@@ -6,11 +6,20 @@ class Feed extends Component {
     state = {
         ads: []
     }
-
+    constructor(props){
+        super(props);
+    }
     componentDidMount(){
         this.fetchAds();
     }
-
+    componentWillReceiveProps(props){
+        console.log("vediamo");
+        if(props.adsList != null){
+            this.setState({ ads: props.adsList});
+            //this.setState(this.state);
+        }
+       
+    }
     async fetchAds(){
         axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads').then(
             (response) => {
@@ -23,9 +32,10 @@ class Feed extends Component {
         return (
             <div id="feed">
 
-                { this.state.ads.map( ad => <Ad
+                { this.state.ads ? this.state.ads.map( ad => <Ad
                     body={ad.body}
-                />)
+                    title={ad.subject}
+                />) : null
             }
 
             </div>

@@ -77,20 +77,32 @@ module.exports = {
     },
 
 
-    fieldsSearchBarHandler: async function (req, res){
-        categories = [];
-        categories.push('[{"_id":"13","name":"Per la casa e la persona","parentId":"13"},{"_id":"16","name":"Abbigliamento e accessori","parentId":"13"}]');
-        
-        res.json(JSON.parse(categories));
-
-    },
-
-
     handleAdsRequest: async function (req, res){
-        console.log(req.query);
+        console.log(req.query);    
         var query = {};
+        if(req.query.constructor === Object && Object.keys(req.query).length === 0) {
+            console.log('Object missing');
+        }else{
+            var query = {
+                $or: [
+                    {subject: { $regex: req.query.src,  $options: 'i' }},
+                    {body: { $regex: req.query.src,  $options: 'i' }}
+                ]
+                
+            };
+        }
+        /*
+        */
+        /*
+        "body": /req.query.src/,
+            "category.id": req.query.cat,
+            "geo.region": req.query.geo,
+            "geo.province": req.query.geoprov,
+            "features[0].value": {$gte: req.query.min},
+        */
+        console.log(query);
         var result = await sendDBRequest(adsDBHandler, query).catch(console.err);
-        //console.log(result);
+        console.log(result);
         if(result){
             res.json(result);
         }else{

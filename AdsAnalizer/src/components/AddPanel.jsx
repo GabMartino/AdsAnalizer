@@ -15,6 +15,11 @@ class AddPanel extends Component {
 
     }
 
+    handleSubmit(){
+
+
+        
+    }
     render() {
 
         return (

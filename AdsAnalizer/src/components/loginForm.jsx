@@ -37,13 +37,13 @@ class LoginForm extends Component {
     }
 
     async sendData(obj, data){
-        await axios.post('http://'+window.location.hostname+':3001/login', data, {
+        await axios.post('http://'+window.location.hostname+':'+this.props.webServerPort+'/login', data, {
             headers: { 'Content-Type': 'multipart/form-data' },
           }).then(function (response){
               if(response.data == "ok"){
-                obj.props.doLogIn();
+                    obj.props.doLogIn();
               }else{
-                  alert("Username or Password wrong");
+                    alert("Username or Password wrong");
               }
             
           }).catch(function (error) {

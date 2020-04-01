@@ -19,8 +19,8 @@ class App extends Component {
         showLogIn: false,
         showSignUp: false,
         userIsLogged: false,
-        showAdd: false
-
+        showAdd: false,
+        searchResult: null
     }
 
     constructor(props){
@@ -114,6 +114,11 @@ class App extends Component {
             }
        );
     }
+
+    fetchSearchResult(result){
+        console.log(result);
+        this.setState({searchResult: result});
+    }
     render() {
 
         return (
@@ -126,12 +131,15 @@ class App extends Component {
                         showSignUpButton={ !this.state.userIsLogged  }
                         showLogoutButton={ this.state.userIsLogged }
                         webServerPort={ this.webServerPort }
+                       
                 />
                 <SearchBar
                     webServerPort={ this.webServerPort }
+                    reportResult = { this.fetchSearchResult.bind(this)}
                 />
                 <Feed
                     webServerPort={ this.webServerPort }
+                    adsList={ this.state.searchResult }
                 ></Feed>
                 <div ref={ this.closeLogInRef } className={ this.state.showLogIn ? "form_wrapper show_form" : "form_wrapper" }>
                   <LoginForm  doLogIn={ this.doLogIn.bind(this)}

@@ -6,7 +6,7 @@ class SearchBar extends Component {
 
     state = {
 
-        searchString: "",
+        searchString: '',
         minPriceValue: 0,
         maxPriceValue: Infinity,
         selectedCategory: { id: null, name:null},
@@ -16,6 +16,7 @@ class SearchBar extends Component {
         regions: [],
         categories: [],
         provinces: [],
+        searchResult: null
 
     }
 
@@ -113,19 +114,21 @@ class SearchBar extends Component {
                 src: this.state.searchString,
                 cat: this.state.selectedCategory.id,
                 geo: this.state.selectedRegion.id,
+                geoprov: this.state.selectedProvince.id,
                 min: this.state.minPriceValue,
                 max: this.state.maxPriceValue
             }
         }
         console.log(linearizedResearchFields);
         this.sendData(linearizedResearchFields);
+       
     }
 
     async sendData(linearizedResearchFields){
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads', linearizedResearchFields).then(
+        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads', linearizedResearchFields).then(
             (response) => {
-                this.setState({categories: response.data});
-                console.log("oooooooook");
+                    this.setState({searchResult: response.data});
+                    this.props.reportResult(this.state.searchResult);
                 }
         );
     }

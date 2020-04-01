@@ -4,12 +4,16 @@ import placeholder from '../assets/images/placeholder.png';
 
 class Ad extends Component {
     state = {
-        src: "https://picsum.photos/200",
-        title: "Lorem ipsum",
+        title: this.props.title,
         body: this.props.body
      }
     constructor(props){
         super(props);
+    }
+    componentWillReceiveProps(props){
+        this.setState({ title: props.title,
+                        body: props.body});
+        //this.setState(this.state);
     }
     render() {
         return (
