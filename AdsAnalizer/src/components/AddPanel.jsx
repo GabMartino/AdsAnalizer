@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 class AddPanel extends Component {
 
@@ -18,7 +17,7 @@ class AddPanel extends Component {
     handleSubmit(){
 
 
-        
+
     }
     render() {
 

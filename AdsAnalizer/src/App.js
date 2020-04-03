@@ -8,19 +8,24 @@ import SearchBar from './components/searchBar';
 import LoginForm from './components/loginForm';
 import SignUpForm from './components/signUpForm';
 import AddPanel from './components/AddPanel';
+import Dashboard from './components/dashboard';
+import Statistics from './components/Statistics';
+
 
 
 class App extends Component {
 
-    
-    webServerPort = 809;
+
+    webServerPort = 3001;
     state = {
 
         showLogIn: false,
         showSignUp: false,
-        userIsLogged: false,
         showAdd: false,
-        searchResult: null
+        showStatistics: false,
+        userIsLogged: false,
+        searchResult: null,
+        filter: null
     }
 
     constructor(props){
@@ -30,8 +35,9 @@ class App extends Component {
         //refs
 		this.closeLogInRef = React.createRef();
         this.closeSignUpRef = React.createRef();
-        this.addRef = React.createRef();
         this.closeAddRef = React.createRef();
+        this.closeStatistics = React.createRef();
+        this.addRef = React.createRef();
 
     }
 
@@ -45,8 +51,6 @@ class App extends Component {
             if (this.closeLogInRef.current  === event.target) {
                 this.showLogIn( false );
             }
-
-
         } );
 
         this.closeSignUpRef.current.addEventListener( "click", (event) => {
@@ -64,6 +68,41 @@ class App extends Component {
                 this.showAdd( false );
             }
         } );
+
+        this.closeStatistics.current.addEventListener( "click", (event) => {
+            if (this.closeStatistics.current  === event.target) {
+                this.showStatistics( false );
+            }
+        } );
+
+    }
+
+    applyFilter( filter ){
+
+        if( this.state.filter == filter ){
+
+            this.setState( {
+                filter: !this.state.filter
+            } );
+
+        } else{
+
+            this.setState( {
+                filter: filter
+            } );
+
+        }
+
+        console.log( "Filter applied: " );
+        console.log( this.state.filter );
+
+    }
+
+    showStatistics( show ){
+
+        this.setState({
+            showStatistics: show
+        })
 
     }
 
@@ -131,12 +170,16 @@ class App extends Component {
                         showSignUpButton={ !this.state.userIsLogged  }
                         showLogoutButton={ this.state.userIsLogged }
                         webServerPort={ this.webServerPort }
-                       
+
                 />
                 <SearchBar
                     webServerPort={ this.webServerPort }
                     reportResult = { this.fetchSearchResult.bind(this)}
                 />
+                <Dashboard userIsLogged={ this.state.userIsLogged } applyFilter={ this.applyFilter.bind(this) } showStatistics={ this.showStatistics.bind(this) }/>
+                <div ref={ this.closeStatistics } className={ this.state.showStatistics ? "form_wrapper show_form" : "form_wrapper" }>
+                    <Statistics />
+                </div>
                 <Feed
                     webServerPort={ this.webServerPort }
                     adsList={ this.state.searchResult }
