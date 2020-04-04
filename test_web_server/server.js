@@ -16,10 +16,12 @@ const test = require('assert');
 
 //HANDLERS
 
-app.post('/login', upload.array(), support.loginHandler )
+app.put('/login', upload.array(), support.loginHandler )
+app.put('/logout', upload.array(), support.logoutHandler )
 app.post('/users', upload.array(), support.signupHandler )
+app.get('/categories', support.handleCategoriesRequests )
 app.get('/ads', support.handleAdsRequest )
-app.get('/geos/', support.handleGeosRequests )
+app.get('/geos', support.handleGeosRequests )
 
 
 //STARTING POINT

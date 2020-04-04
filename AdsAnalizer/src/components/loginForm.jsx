@@ -15,7 +15,6 @@ class LoginForm extends Component {
     }
 
     state = {
-
         email: "",
         password: ""
 
@@ -37,17 +36,19 @@ class LoginForm extends Component {
     }
 
     async sendData(obj, data){
-        await axios.post('http://'+window.location.hostname+':'+this.props.webServerPort+'/login', data, {
+        await axios.put('http://'+window.location.hostname+':'+this.props.webServerPort+'/login', data, {
             headers: { 'Content-Type': 'multipart/form-data' },
-          }).then(function (response){
-              if(response.data == "ok"){
-                    obj.props.doLogIn();
-              }else{
-                    alert("Username or Password wrong");
-              }
+            }).then(function (response){
+                console.log(response);
+                if(response.status == 200 && response.data != "notFound"){
+                       // obj.setState({userLogged: response.data});
+                        obj.props.doLogIn(response.data);
+                }else{
+                        alert("Username or Password wrong");
+                }
             
           }).catch(function (error) {
-            console.log(error);
+                console.log(error);
           });
     }
 

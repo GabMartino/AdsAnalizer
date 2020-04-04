@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import axios from 'axios';
 import logo from './logo.svg';
 import plus from './assets/icons/plus.png';
 import NavBar from './components/navBar';
@@ -18,7 +18,7 @@ class App extends Component {
 
     webServerPort = 3001;
     state = {
-
+        userLogged: {},
         showLogIn: false,
         showSignUp: false,
         showAdd: false,
@@ -131,12 +131,13 @@ class App extends Component {
     }
 
     // should be available from inside loginForm and signUpForm
-    doLogIn(  ){
+    doLogIn(userData){
         console.log( "made it to log in!" );
         this.showLogIn( false );
         this.setState(
              {
-                 userIsLogged: true
+                 userIsLogged: true,
+                 userLogged: userData
              }
         );
     }
@@ -152,8 +153,22 @@ class App extends Component {
                 userIsLogged: false
             }
        );
+       this.logoutRequest();
     }
 
+    async logoutRequest(obj, data){
+        await axios.put('http://'+window.location.hostname+':'+this.webServerPort+'/logout').then(function (response){
+                console.log(response);
+                if(response.status == 200){
+                        console.log("Logout Succeded.");
+                }else{
+                        alert("Something's gone wrong");
+                }
+            
+          }).catch(function (error) {
+                console.log(error);
+          });
+    }
     fetchSearchResult(result){
         console.log(result);
         this.setState({searchResult: result});
@@ -163,6 +178,7 @@ class App extends Component {
         return (
             <div className={ "app" }>
                 <NavBar
+                        username= {this.state.userLogged.name}
                         showLogIn={ this.showLogIn.bind(this) }
                         showSignUp={ this.showSignUp.bind(this) }
                         logOut= {this.doLogOut.bind(this) }
@@ -178,7 +194,10 @@ class App extends Component {
                 />
                 <Dashboard userIsLogged={ this.state.userIsLogged } applyFilter={ this.applyFilter.bind(this) } showStatistics={ this.showStatistics.bind(this) }/>
                 <div ref={ this.closeStatistics } className={ this.state.showStatistics ? "form_wrapper show_form" : "form_wrapper" }>
-                    <Statistics />
+                    <Statistics
+                        dataset={this.state.searchResult}
+                    
+                    />
                 </div>
                 <Feed
                     webServerPort={ this.webServerPort }
@@ -196,7 +215,9 @@ class App extends Component {
                     ></SignUpForm>
                 </div>
                 <div ref={ this.closeAddRef } className={ this.state.showAdd ? "form_wrapper show_form" : "form_wrapper" }>
-                    <AddPanel />
+                    <AddPanel 
+                        webServerPort={this.webServerPort}
+                    />
                 </div>
                 <div ref={ this.addRef } class={ this.state.userIsLogged ? "add_button show" : "add_button" }>
                     <img src={ plus } />

@@ -35,6 +35,11 @@ class Feed extends Component {
                 { this.state.ads ? this.state.ads.map( ad => <Ad
                     body={ad.body}
                     title={ad.subject}
+                    region= {ad.geo.region.value}
+                    province= {ad.geo.province.value}
+                    town= {ad.geo.town.value}
+                    price= {ad.features[0].value}
+                    author={ad.advertiser.name}
                 />) : null
             }
 

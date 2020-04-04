@@ -5,8 +5,8 @@ class NavBar extends Component {
 
     state = {
         showLogInButton: true,
-        showSignUpButton: true
-
+        showSignUpButton: true,
+        username: "",
     }
 
     constructor(props){
@@ -25,7 +25,9 @@ class NavBar extends Component {
         this.initListeners();
 
     }
-
+    componentWillReceiveProps(props){
+        this.setState({username: props.username});
+    }
     initListeners(){
 
         this.logInRef.current.addEventListener( "click", () => {
@@ -38,6 +40,7 @@ class NavBar extends Component {
 
         this.logoutRef.current.addEventListener( "click", () => {
             this.props.logOut( true );
+            this.setState({username: ""});
         } );
 
     }
@@ -48,6 +51,7 @@ class NavBar extends Component {
             <nav className="navbar navbar-light">
                 <span className="navbar-brand mb-0 h1">AdsAnalizer</span>
                 <p>
+                    {this.state.username}
                     <button ref={ this.logInRef } className={this.props.showLogInButton ? "btn btn-primary m-2" : "btn btn-primary m-2 notDisplay"}  type="button"  aria-expanded="false" aria-controls="collapseExample">
                         Login
                     </button>

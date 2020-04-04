@@ -40,13 +40,20 @@ class SearchBar extends Component {
     }
 
     async fetchData(){
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories').then(
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories', 
+            {
+                params: {
+                    val: 0
+                }
+            }
+        ).then(
             (response) => {
+                console.log(response);
                 this.setState({categories: response.data});
                 }
         );
 
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/',{
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos',{
             params: {
                 val: 0
             }
@@ -65,11 +72,12 @@ class SearchBar extends Component {
                 this.setState({searchString: event.target.value});
                 break;
             case this.minPriceField.current:
-                this.setState({minPriceValue: event.target.value});
+                var value = event.target.value != '' ? event.target.value : 0;
+                this.setState({minPriceValue: value});
                 break;
             case this.maxPriceField.current:
-                this.setState({maxPriceValue: event.target.value});
-
+                var value = event.target.value != '' ? event.target.value : Infinity;
+                this.setState({maxPriceValue: value});
         }
     }
 
