@@ -17,7 +17,12 @@ class Ad extends Component {
     }
     componentWillReceiveProps(props){
         this.setState({ title: props.title,
-                        body: props.body});
+                        body: props.body,
+                        region: props.region,
+                        province: props.province,
+                        town: props.town,
+                        price: props.price,
+                        author: props.author});
         //this.setState(this.state);
     }
     render() {

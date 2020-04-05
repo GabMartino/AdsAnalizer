@@ -23,6 +23,8 @@ class Feed extends Component {
     async fetchAds(){
         axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads').then(
             (response) => {
+                
+                console.log(response);
                 this.setState({ads: response.data});
                 }
         );
@@ -32,12 +34,12 @@ class Feed extends Component {
         return (
             <div id="feed">
 
-                { this.state.ads ? this.state.ads.map( ad => <Ad
+                { Array.isArray(this.state.ads) && this.state.ads.length ? this.state.ads.map( ad => <Ad
                     body={ad.body}
                     title={ad.subject}
                     region= {ad.geo.region.value}
                     province= {ad.geo.province.value}
-                    town= {ad.geo.town.value}
+                    //town= {ad.geo.town.value}
                     price= {ad.features[0].value}
                     author={ad.advertiser.name}
                 />) : null

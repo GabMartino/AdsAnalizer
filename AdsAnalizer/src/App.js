@@ -38,6 +38,7 @@ class App extends Component {
         this.closeAddRef = React.createRef();
         this.closeStatistics = React.createRef();
         this.addRef = React.createRef();
+        this.fetchOwnAds = this.fetchOwnAds.bind(this);
 
     }
 
@@ -95,7 +96,28 @@ class App extends Component {
 
         console.log( "Filter applied: " );
         console.log( this.state.filter );
+        this.fetchOwnAds(this, this.state.userLogged.id);
 
+    }
+    async fetchOwnAds(obj,idUser){
+        await axios.get('http://'+window.location.hostname+':'+this.webServerPort+'/ads',{
+            params: {
+                idUser: idUser
+            }
+        }
+            
+        ).then(function (response){
+                console.log(response);
+                if(response.status == 200){
+                    obj.setState({ searchResult: response.data});
+                    console.log("oook");
+                }else{
+                    alert("Something's gone wrong");
+                }
+            
+          }).catch(function (error) {
+                console.error(error);
+          });
     }
 
     showStatistics( show ){
@@ -150,7 +172,8 @@ class App extends Component {
     doLogOut(){
         this.setState(
             {
-                userIsLogged: false
+                userIsLogged: false,
+                userLogged: {}
             }
        );
        this.logoutRequest();
@@ -192,7 +215,10 @@ class App extends Component {
                     webServerPort={ this.webServerPort }
                     reportResult = { this.fetchSearchResult.bind(this)}
                 />
-                <Dashboard userIsLogged={ this.state.userIsLogged } applyFilter={ this.applyFilter.bind(this) } showStatistics={ this.showStatistics.bind(this) }/>
+                <Dashboard 
+                        userIsLogged={ this.state.userIsLogged } 
+                        applyFilter={ this.applyFilter.bind(this) } 
+                        showStatistics={ this.showStatistics.bind(this) }/>
                 <div ref={ this.closeStatistics } className={ this.state.showStatistics ? "form_wrapper show_form" : "form_wrapper" }>
                     <Statistics
                         dataset={this.state.searchResult}
@@ -215,8 +241,10 @@ class App extends Component {
                     ></SignUpForm>
                 </div>
                 <div ref={ this.closeAddRef } className={ this.state.showAdd ? "form_wrapper show_form" : "form_wrapper" }>
-                    <AddPanel 
+                    <AddPanel
+                        actualUser= {this.state.userLogged}
                         webServerPort={this.webServerPort}
+                        showAdd = {this.showAdd.bind(this)}
                     />
                 </div>
                 <div ref={ this.addRef } class={ this.state.userIsLogged ? "add_button show" : "add_button" }>

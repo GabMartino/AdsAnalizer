@@ -33,6 +33,8 @@ class LoginForm extends Component {
         form.set('email', this.state.email);
         form.set('password', this.state.password);
         this.sendData(this, form);
+        this.setState({email: "",
+                        password: ""});
     }
 
     async sendData(obj, data){

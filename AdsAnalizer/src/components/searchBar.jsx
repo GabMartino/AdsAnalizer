@@ -96,23 +96,28 @@ class SearchBar extends Component {
 
     }
 
-    setRegion(event){
+    async setRegion(event){
         event.preventDefault();
         let prop = {...this.state.selectedRegion};
         prop.id = event.target.id;
         prop.name = event.target.name;
-        this.setState({ selectedRegion: prop });
-
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/',{
+       
+        this.setState({selectedRegion: prop });
+        
+        this.setState({selectedProvince: { id: null, name: null} });
+        //console.log(window.location.hostname);
+        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos',{
             params: {
-                val: 13
+                val: prop.id
             }
         }).then(
             (response) => {
                 this.setState({provinces: response.data});
+                
                 }
         );
         this.setState({ showProvinces: true });
+
     }
 
     //HANDLE RESEARCH
@@ -127,6 +132,7 @@ class SearchBar extends Component {
                 max: this.state.maxPriceValue
             }
         }
+        
         console.log(linearizedResearchFields);
         this.sendData(linearizedResearchFields);
        

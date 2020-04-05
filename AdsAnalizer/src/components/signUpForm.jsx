@@ -46,6 +46,10 @@ class SignUpForm extends Component {
             "pass": this.state.password
         }
         this.sendData(newUser);
+        this.setState({ username: "",
+                        phoneNumber: "",
+                        email: "",
+                        password: ""});
     }
 
     async sendData(data){

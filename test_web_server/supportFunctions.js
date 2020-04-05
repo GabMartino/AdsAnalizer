@@ -1,8 +1,14 @@
 const MongoClient = require('mongodb').MongoClient;
+var accepts = require('mongodb-language-model').accepts;
 //////////////////////// MAIN FUNCTION FOR DB CALLS
 const url = 'mongodb://localhost:27017';
 //const url = 'mongodb://80.112.184.23:810/';
 const dbname = "maga";
+
+
+
+
+
 async function sendDBRequest(callbackFunction, query){
     let client = {};
     var result = {};
@@ -51,6 +57,23 @@ async function categoriesHandler(client, query){
         console.log(e);
     }
 }
+async function adsAddHandler(client, query){
+    try{
+        const result = await client.db(dbname).collection("ads").insertOne(query);
+        return await result;
+    }catch(e){
+        console.log(e);
+    }
+}
+async function geoDBHandler(client, query){
+    try{
+        const result = await client.db(dbname).collection("geo").find(query);
+        return await result.toArray();
+    }catch(e){
+        console.log(e);
+    }
+}
+
 
 module.exports = {
     
@@ -64,6 +87,7 @@ module.exports = {
         if(result){
             //To not response back the password
             var responseBack = {
+                id: result._id,
                 name: result.name,
                 email: result.email,
                 telephone: result.telephone,
@@ -95,22 +119,40 @@ module.exports = {
         }
         
     },
+    handleAdsAddRequest: async function (req, res){
+        console.log(req.body);
+        var result = await sendDBRequest(adsAddHandler, req.body).catch(console.err);
+        //console.log(result);
+        if(result.insertedId){
+            res.send("ok");
+        }else{
+            res.send("error");
+        }
+        
+    },
+
 
 
 
     handleAdsRequest: async function (req, res){
-        console.log(req.query);    
+        //console.log(req);
+        //console.log(req.query);    
         var query = {};
         if(req.query.constructor === Object && Object.keys(req.query).length === 0) {
             console.log('Object missing');
+        }else if(req.query.idUser != undefined){
+            query = {
+                'advertiser.userId': req.query.idUser
+            };
+            
         }else{
-            var query = {
+            query = {
                 $and: [
                     {
                         
                         $or: [
-                            {subject: { $regex: req.query.src,  $options: 'i' }},
-                            {body: { $regex: req.query.src,  $options: 'i' }}
+                            {'subject': { $regex: req.query.src,  $options: 'i' }},
+                            {'body': { $regex: req.query.src,  $options: 'i' }}
                         ],
                                                
                     },
@@ -132,22 +174,24 @@ module.exports = {
                                 'features.0.value': { $lte: parseFloat(req.query.max) }
                             }
                         ] 
+                    },
+                    {
+                        'advertiser.userId': req.query.id
                     }
                     
                 ]
             };
-            for( var i = 0; i < query.$and.length; i++){
+           
+            for( var i = query.$and.length -1 ; i >= 0; i--){
                 var obj = query.$and[i];
-                if(obj[Object.keys(obj)[0]] === undefined){
-                    query.$and.splice(i,i);
+                if(obj[Object.keys(obj)[0]] == undefined){
+                    query.$and.splice(i,1);
                 }
             }
         }
-        
-        //query.$and.push(andQuery);
         console.log(query);
         var result = await sendDBRequest(adsDBHandler, query).catch(console.err);
-        //console.log(result);
+        console.log(result);
         if(result){
             res.json(result);
         }else{
@@ -158,12 +202,22 @@ module.exports = {
 
     handleGeosRequests: async function (req, res){
         if(req.query.val == 0){
-            let region = '[{"_id":"13","name":"Abruzzo","level":{"$numberInt":"0"},"neighbors":["11","12","14"]}]';
-            res.json(JSON.parse(region));
-        }else if( req.query.val != 0){
-            let ads = '[{"_id":"069","name":"Chieti","level":{"$numberInt":"1"},"regionId":"13","shortName":"CH"},{"_id":"068","name":"Pescara","level":{"$numberInt":"1"},"regionId":"13","shortName":"PE"}]';
+           
+            var query = {
+                level: 0
+            };
+            var result = await sendDBRequest(geoDBHandler, query).catch(console.err);
             
-            res.json(JSON.parse(ads));
+            res.json(result);
+        }else if( req.query.val != 0){
+            var query = {
+                level: 1,
+                regionId: req.query.val
+            };
+           
+            var result = await sendDBRequest(geoDBHandler, query).catch(console.err);
+            console.log(result);
+            res.json(result);
         }
     },
 
