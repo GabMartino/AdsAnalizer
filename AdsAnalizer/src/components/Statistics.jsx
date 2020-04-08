@@ -18,7 +18,7 @@ class Statistics extends Component {
     componentWillReceiveProps(){
         this.setState({dataset: this.props.dataset});
         console.log(this.state.dataset);
-        if(this.props.dataset != null ){
+        if(this.props.dataset != null && this.props.dataset.features != null){
             var totalPrice = 0;
             for(var i = 0; i< this.props.dataset.length; i++){
                 totalPrice += this.props.dataset[i].features[0].value;

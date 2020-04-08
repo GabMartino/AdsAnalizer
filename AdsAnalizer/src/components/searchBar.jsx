@@ -40,25 +40,19 @@ class SearchBar extends Component {
     }
 
     async fetchData(){
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories', 
-            {
-                params: {
-                    val: 0
-                }
-            }
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories/0'
         ).then(
             (response) => {
-                console.log(response);
+                console.log("Fetching all categories for the first time");
+                console.log(response.data);
                 this.setState({categories: response.data});
                 }
         );
 
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos',{
-            params: {
-                val: 0
-            }
-        }).then(
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/0').then(
             (response) => {
+                console.log("Fetching all geos for the first time");
+                console.log(response.data);
                 this.setState({regions: response.data});
                 }
         );
@@ -106,11 +100,7 @@ class SearchBar extends Component {
         
         this.setState({selectedProvince: { id: null, name: null} });
         //console.log(window.location.hostname);
-        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos',{
-            params: {
-                val: prop.id
-            }
-        }).then(
+        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/'+prop.id).then(
             (response) => {
                 this.setState({provinces: response.data});
                 
@@ -132,13 +122,15 @@ class SearchBar extends Component {
                 max: this.state.maxPriceValue
             }
         }
-        
         console.log(linearizedResearchFields);
         this.sendData(linearizedResearchFields);
        
     }
 
     async sendData(linearizedResearchFields){
+        if(linearizedResearchFields.params.min == 0 && linearizedResearchFields.params.max == Infinity && linearizedResearchFields.params.searchField == ''){
+            linearizedResearchFields = null;
+        }
         await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads', linearizedResearchFields).then(
             (response) => {
                     this.setState({searchResult: response.data});

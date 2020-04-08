@@ -10,6 +10,7 @@ import SignUpForm from './components/signUpForm';
 import AddPanel from './components/AddPanel';
 import Dashboard from './components/dashboard';
 import Statistics from './components/Statistics';
+import consts from './consts';
 
 
 
@@ -38,12 +39,13 @@ class App extends Component {
         this.closeAddRef = React.createRef();
         this.closeStatistics = React.createRef();
         this.addRef = React.createRef();
-        this.fetchOwnAds = this.fetchOwnAds.bind(this);
+        this.fetchAds = this.fetchAds.bind(this);
 
     }
 
     componentDidMount(){
         this.initListeners();
+        this.fetchAds(this, null);
     }
 
     initListeners(){
@@ -96,17 +98,27 @@ class App extends Component {
 
         console.log( "Filter applied: " );
         console.log( this.state.filter );
-        this.fetchOwnAds(this, this.state.userLogged.id);
-
-    }
-    async fetchOwnAds(obj,idUser){
-        await axios.get('http://'+window.location.hostname+':'+this.webServerPort+'/ads',{
-            params: {
-                idUser: idUser
+        var params = null;
+        if(this.state.filter == consts.FILTER_MY_ADS){//for ads of a user
+            params = {
+                params: {
+                    uid: this.state.userLogged.id
+                }
+            }
+        }else if(this.state.filter == consts.FILTER_FLAGGED) {// for reported ads
+            params = {
+                params: {
+                    rep: 1
+                }
             }
         }
-            
-        ).then(function (response){
+
+        this.fetchAds(this, params);
+        
+
+    }
+    async fetchAds(obj,params){
+        await axios.get('http://'+window.location.hostname+':'+this.webServerPort+'/ads',params).then(function (response){
                 console.log(response);
                 if(response.status == 200){
                     obj.setState({ searchResult: response.data});
@@ -177,6 +189,8 @@ class App extends Component {
             }
        );
        this.logoutRequest();
+       this.fetchAds(this, null);
+        
     }
 
     async logoutRequest(obj, data){
@@ -192,6 +206,7 @@ class App extends Component {
                 console.log(error);
           });
     }
+    
     fetchSearchResult(result){
         console.log(result);
         this.setState({searchResult: result});
@@ -228,6 +243,7 @@ class App extends Component {
                 <Feed
                     webServerPort={ this.webServerPort }
                     adsList={ this.state.searchResult }
+                    reportResult = { this.fetchSearchResult.bind(this)}
                 ></Feed>
                 <div ref={ this.closeLogInRef } className={ this.state.showLogIn ? "form_wrapper show_form" : "form_wrapper" }>
                   <LoginForm  doLogIn={ this.doLogIn.bind(this)}

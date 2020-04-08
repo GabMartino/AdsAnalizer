@@ -136,13 +136,13 @@ module.exports = {
 
     handleAdsRequest: async function (req, res){
         //console.log(req);
-        //console.log(req.query);    
+        console.log(req.query);    
         var query = {};
         if(req.query.constructor === Object && Object.keys(req.query).length === 0) {
             console.log('Object missing');
-        }else if(req.query.idUser != undefined){
+        }else if(req.query.uid != undefined){
             query = {
-                'advertiser.userId': req.query.idUser
+                'advertiser.userId': req.query.uid
             };
             
         }else{
@@ -201,7 +201,7 @@ module.exports = {
 
 
     handleGeosRequests: async function (req, res){
-        if(req.query.val == 0){
+        if(req.params.val == 0){
            
             var query = {
                 level: 0
@@ -209,10 +209,10 @@ module.exports = {
             var result = await sendDBRequest(geoDBHandler, query).catch(console.err);
             
             res.json(result);
-        }else if( req.query.val != 0){
+        }else{
             var query = {
                 level: 1,
-                regionId: req.query.val
+                regionId: req.params.val
             };
            
             var result = await sendDBRequest(geoDBHandler, query).catch(console.err);
@@ -222,12 +222,12 @@ module.exports = {
     },
 
     handleCategoriesRequests: async function(req, res){
-        if(req.query.val == 0){
+        if(req.params.val == 0){
             var query = {};
             var result = await sendDBRequest(categoriesHandler, query).catch(console.err);
             //console.log(result);
             res.json(result);
-        }else if( req.query.val != 0){
+        }else if( req.params.val != 0){
 
             //handle subcategories
             let ads = '[{"_id":"069","name":"Chieti","level":{"$numberInt":"1"},"regionId":"13","shortName":"CH"},{"_id":"068","name":"Pescara","level":{"$numberInt":"1"},"regionId":"13","shortName":"PE"}]';

@@ -39,12 +39,7 @@ class AddPanel extends Component {
     }
 
     async fetchData(){
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories', 
-            {
-                params: {
-                    val: 0
-                }
-            }
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories/0'
         ).then(
             (response) => {
                 console.log(response);
@@ -52,11 +47,7 @@ class AddPanel extends Component {
                 }
         );
 
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos',{
-            params: {
-                val: 0
-            }
-        }).then(
+        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/0').then(
             (response) => {
                 this.setState({regions: response.data});
                 }
@@ -86,11 +77,7 @@ class AddPanel extends Component {
         prop.name = event.target.name;
        
         this.setState({selectedRegion: prop });
-        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos',{
-            params: {
-                val: prop.id
-            }
-        }).then(
+        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/'+prop.id).then(
             (response) => {
                 this.setState({provinces: response.data});
                 
