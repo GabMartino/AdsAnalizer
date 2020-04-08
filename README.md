@@ -1,4 +1,11 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Ads Analizer
+
+AdsAnalizer is a web App that gives you the possibility to search, add, report and visualize some statistics on ads.
+
+This is a simple academic project that aims to show an example of using different IT tecnologies. 
+Frontend has been developed using React and Axios for HTTP requests in RESTful way.
+The Web server has been developed in Node using Express
+The backend uses MongoDB able to store documents in flexible way.
 
 ## Available Scripts
 
