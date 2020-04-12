@@ -49,9 +49,12 @@ class NavBar extends Component {
 
         return (
             <nav className="navbar navbar-light">
-                <span className="navbar-brand mb-0 h1">AdsAnalizer</span>
-                <p>
-                    {this.state.username}
+                <div className="nav_elem navbar-brand mb-0 h1">AdsAnalizer</div>
+                <div className="nav_elem">
+                    <div className={ this.state.username ? "user_info show" : "user_info" }>
+                        <p className="label">LOGGED AS</p>
+                        <p>{this.state.username}</p>
+                    </div>
                     <button ref={ this.logInRef } className={this.props.showLogInButton ? "btn btn-primary m-2" : "btn btn-primary m-2 notDisplay"}  type="button"  aria-expanded="false" aria-controls="collapseExample">
                         Login
                     </button>
@@ -62,7 +65,7 @@ class NavBar extends Component {
                         Logout
                     </button>
 
-                </p>
+                </div>
             </nav>
          );
 

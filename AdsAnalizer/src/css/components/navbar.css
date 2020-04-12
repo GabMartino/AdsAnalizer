@@ -21,6 +21,40 @@
 
 }
 
+.navbar .nav_elem{
+	display: flex;
+}
+
+.navbar .nav_elem .user_info{
+
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-end;
+	margin-right: 10px;
+
+}
+
+.navbar .nav_elem .user_info.show{
+	display: flex;
+}
+
+.navbar .nav_elem .user_info p{
+
+	margin: 0;
+	font-family: Cereal_Medium;
+	font-size: 0.8em;
+	color: rgba( 255, 255, 255, 0.8 );
+
+}
+
+.navbar .nav_elem .user_info .label{
+
+	font-family: Cereal_Book;
+	font-size: 0.6em;
+
+}
+
 .btn-primary{
 
 	background: #37966f !important;
