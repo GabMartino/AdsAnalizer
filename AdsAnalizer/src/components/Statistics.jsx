@@ -16,6 +16,7 @@ class Statistics extends Component {
         meanValue: 0,
     }
     componentWillReceiveProps(){
+        /*
         this.setState({dataset: this.props.dataset});
         console.log(this.state.dataset);
         if(this.props.dataset != null && this.props.dataset.features != null){
@@ -27,7 +28,7 @@ class Statistics extends Component {
             console.log(totalPrice);
         }
         
-        
+        */
     }
     render() {
 

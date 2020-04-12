@@ -29,18 +29,19 @@ class LoginForm extends Component {
     }
 
     handleSubmit(){
-        const form = new FormData();
-        form.set('email', this.state.email);
-        form.set('password', this.state.password);
-        this.sendData(this, form);
+        let user = {
+            'email': this.state.email,
+            'pass': this.state.password
+        }
+        this.sendData(this, user);
         this.setState({email: "",
                         password: ""});
     }
 
     async sendData(obj, data){
         await axios.put('http://'+window.location.hostname+':'+this.props.webServerPort+'/login', data, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-            }).then(function (response){
+            headers: { 'Content-Type': 'application/json' }
+          }).then(function (response){
                 console.log(response);
                 if(response.status == 200 && response.data != "notFound"){
                        // obj.setState({userLogged: response.data});

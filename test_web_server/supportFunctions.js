@@ -1,8 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
 var accepts = require('mongodb-language-model').accepts;
 //////////////////////// MAIN FUNCTION FOR DB CALLS
-const url = 'mongodb://localhost:27017';
-//const url = 'mongodb://80.112.184.23:810/';
+//const url = 'mongodb://localhost:27017';
+const url = 'mongodb://80.112.184.23:810/';
 const dbname = "maga";
 
 
@@ -43,7 +43,7 @@ async function signupDBHandler(client, query){
 }
 async function adsDBHandler(client, query){
     try{
-        const result = await client.db(dbname).collection("ads").find(query);
+        const result = await client.db(dbname).collection("ads").find(query).limit(10);
         return await result.toArray();
     }catch(e){
         console.log(e);
@@ -80,10 +80,10 @@ module.exports = {
 
     loginHandler: async function (req, res){
         console.log(req.body);
-        var query = { email: req.body.email , password: req.body.password };
+        var query = { email: req.body.email , password: req.body.pass };
         var result = await sendDBRequest(loginDBHandler, query).catch(console.err);
         console.log("After login Handler");
-        console.log(result);
+        //console.log(result);
         if(result){
             //To not response back the password
             var responseBack = {
@@ -99,7 +99,7 @@ module.exports = {
         }
     },
     logoutHandler: async function (req, res){
-        console.log(req.body);
+        //console.log(req.body);
         res.send("OK");
     },
 
@@ -120,7 +120,7 @@ module.exports = {
         
     },
     handleAdsAddRequest: async function (req, res){
-        console.log(req.body);
+        //console.log(req.body);
         var result = await sendDBRequest(adsAddHandler, req.body).catch(console.err);
         //console.log(result);
         if(result.insertedId){
@@ -146,6 +146,75 @@ module.exports = {
             };
             
         }else{
+            query = {
+                $and: []
+            };
+            if(req.query.src != undefined && req.query.src != ''){
+                query.$and.push({
+                        
+                    $or: [
+                        {'subject': { $regex: req.query.src,  $options: 'i' }},
+                        {'body': { $regex: req.query.src,  $options: 'i' }}
+                    ],
+                                           
+                });
+            }
+            if(req.query.cat != undefined){
+                query.$and.push( {
+                    $or: [ {'category.id':  req.query.cat},
+                        {'category.parentId':  req.query.cat}
+                        ]
+                });
+            }
+            if(req.query.geo != undefined){
+                query.$and.push( {
+                    'geo.region.id':   req.query.geo 
+                });
+            }
+            if(req.query.geoprov != undefined){
+                query.$and.push( {
+                    'geo.province.id':   req.query.geoprov
+                });
+            }
+            if(req.query.min != undefined && req.query.max != undefined){
+                
+                query.$and.push({
+                    $and: [
+                        {
+                            'features.0.value': { $gte: parseFloat(req.query.min)}
+                        },{
+                            'features.0.value': { $lte: parseFloat(req.query.max) }
+                        }
+                    ]
+
+                });
+            }else if(req.query.min != undefined){
+                query.$and.push({
+                    $and: [
+                        {
+                            'features.0.value': { $gte: parseFloat(req.query.min)}
+                        }
+                    ]
+
+                });
+            }else if(req.query.max != undefined){
+                query.$and.push({
+                    $and: [{
+                            'features.0.value': { $lte: parseFloat(req.query.max) }
+                        }
+                    ]
+
+                });
+            }
+            if(req.query.uid != undefined){
+                query.$and.push(
+                    {
+                        'advertiser.userId': req.query.uid
+                    }
+                )
+            }
+
+            /*
             query = {
                 $and: [
                     {
@@ -176,12 +245,12 @@ module.exports = {
                         ] 
                     },
                     {
-                        'advertiser.userId': req.query.id
+                        'advertiser.userId': req.query.uid
                     }
                     
                 ]
             };
-           
+            */
             for( var i = query.$and.length -1 ; i >= 0; i--){
                 var obj = query.$and[i];
                 if(obj[Object.keys(obj)[0]] == undefined){
@@ -191,7 +260,7 @@ module.exports = {
         }
         console.log(query);
         var result = await sendDBRequest(adsDBHandler, query).catch(console.err);
-        console.log(result);
+        //console.log(result);
         if(result){
             res.json(result);
         }else{
@@ -216,23 +285,34 @@ module.exports = {
             };
            
             var result = await sendDBRequest(geoDBHandler, query).catch(console.err);
-            console.log(result);
+            //console.log(result);
             res.json(result);
         }
     },
 
     handleCategoriesRequests: async function(req, res){
         if(req.params.val == 0){
-            var query = {};
+            var query = {
+                $where: 'this.parentId == this._id'
+            };
+            //console.log("vediamo")
+            //console.log(query);
             var result = await sendDBRequest(categoriesHandler, query).catch(console.err);
             //console.log(result);
             res.json(result);
         }else if( req.params.val != 0){
-
-            //handle subcategories
-            let ads = '[{"_id":"069","name":"Chieti","level":{"$numberInt":"1"},"regionId":"13","shortName":"CH"},{"_id":"068","name":"Pescara","level":{"$numberInt":"1"},"regionId":"13","shortName":"PE"}]';
+            var query = {
+                $and: [
+                    { parentId: req.params.val},
+                    {
+                        $where: 'this.parentId != this._id'
+                    }
+                ]
+               
+            };
+            var result = await sendDBRequest(categoriesHandler, query).catch(console.err);
             
-            res.json(JSON.parse(ads));
+            res.json(result);
         }
 
     }

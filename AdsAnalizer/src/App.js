@@ -26,7 +26,7 @@ class App extends Component {
         showStatistics: false,
         userIsLogged: false,
         searchResult: null,
-        filter: null
+        filter: null,
     }
 
     constructor(props){
@@ -46,8 +46,31 @@ class App extends Component {
     componentDidMount(){
         this.initListeners();
         this.fetchAds(this, null);
-    }
+        let res = this.getCookie("sessionId");
+        console.log(res);
+        if(res){
+            this.setState({ userIsLogged: true});
+        }
 
+    }
+    getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+    delete_cookie( name ) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
     initListeners(){
 
         this.closeLogInRef.current.addEventListener( "click", (event) => {
@@ -98,7 +121,11 @@ class App extends Component {
 
         console.log( "Filter applied: " );
         console.log( this.state.filter );
-        var params = null;
+        var params = {
+            params: {
+                pag: 1
+            }
+        };
         if(this.state.filter == consts.FILTER_MY_ADS){//for ads of a user
             params = {
                 params: {
@@ -119,8 +146,10 @@ class App extends Component {
     }
     async fetchAds(obj,params){
         await axios.get('http://'+window.location.hostname+':'+this.webServerPort+'/ads',params).then(function (response){
-                console.log(response);
+                //console.log(response);
                 if(response.status == 200){
+                    //response.data = response.data.replace("\\", "\\\\");
+                    //console.log(response);
                     obj.setState({ searchResult: response.data});
                     console.log("oook");
                 }else{
@@ -185,11 +214,12 @@ class App extends Component {
         this.setState(
             {
                 userIsLogged: false,
-                userLogged: {}
+                userLogged: {}  
             }
        );
        this.logoutRequest();
        this.fetchAds(this, null);
+       this.delete_cookie("sessionId");
         
     }
 
@@ -271,6 +301,7 @@ class App extends Component {
 
     }
 
+    
 
 }
 

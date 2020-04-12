@@ -13,21 +13,21 @@ class Feed extends Component {
         if(props.adsList != null){
             this.setState({ ads: props.adsList});
         }
-       
+      
     }
     render() {
         return (
             <div id="feed">
-
+                
                 { Array.isArray(this.state.ads) && this.state.ads.length ? this.state.ads.map( ad => <Ad
                     body={ad.body}
                     title={ad.subject}
                     region= {ad.geo.region.value}
                     province= {ad.geo.province.value}
                     //town= {ad.geo.town.value}
-                    price= {ad.features[0].value}
+                    price= {Array.isArray(ad.features) && ad.features.length ? ad.features[0].value : null}
                     author={ad.advertiser.name}
-                />) : null
+                />)  : null
             }
 
             </div>

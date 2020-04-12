@@ -6,15 +6,18 @@ class SearchBar extends Component {
 
     state = {
 
-        searchString: '',
-        minPriceValue: 0,
-        maxPriceValue: Infinity,
+        searchString: null,
+        minPriceValue: null,
+        maxPriceValue: null,
         selectedCategory: { id: null, name:null},
+        selectedSubCategory: {id: null, name:null},
         selectedRegion: { id: null, name: null},
         selectedProvince: { id: null, name: null},
         showProvinces: false,
+        showSubCategories: false,
         regions: [],
         categories: [],
+        subcategories: [],
         provinces: [],
         searchResult: null
 
@@ -31,6 +34,7 @@ class SearchBar extends Component {
         this.maxPriceField = React.createRef();
         this.searchField = React.createRef();
         this.setCategory = this.setCategory.bind(this);
+        this.setSubCategory = this.setSubCategory.bind(this);
         this.setRegion = this.setRegion.bind(this);
         this.setProvince = this.setProvince.bind(this);
 
@@ -75,18 +79,26 @@ class SearchBar extends Component {
         }
     }
 
-    setCategory(event){
+    async setCategory(event){
         let prop = {...this.selectedCategory};
         prop.id = event.target.id;
         prop.name = event.target.name;
         this.setState({ selectedCategory: prop});
-
+        this.setState({ selectedSubCategory: { id: null, name: null} });
+        //console.log(window.location.hostname);
+        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories/'+prop.id).then(
+            (response) => {
+                this.setState({subcategories: response.data});
+                
+                }
+        );
+        this.setState({ showSubCategories: true });
     }
-    setProvince(event){
-        let prop = {...this.state.selectedProvince};
+    setSubCategory(event){
+        let prop = {...this.state.selectedSubCategory};
         prop.id = event.target.id;
         prop.name = event.target.name;
-        this.setState({ selectedProvince: prop });
+        this.setState({ selectedSubCategory: prop });
 
     }
 
@@ -97,7 +109,6 @@ class SearchBar extends Component {
         prop.name = event.target.name;
        
         this.setState({selectedRegion: prop });
-        
         this.setState({selectedProvince: { id: null, name: null} });
         //console.log(window.location.hostname);
         await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/'+prop.id).then(
@@ -109,31 +120,53 @@ class SearchBar extends Component {
         this.setState({ showProvinces: true });
 
     }
+    setProvince(event){
+        let prop = {...this.state.selectedProvince};
+        prop.id = event.target.id;
+        prop.name = event.target.name;
+        this.setState({ selectedProvince: prop });
+
+    }
 
     //HANDLE RESEARCH
     handleSearch(){
-        let linearizedResearchFields = {
+        let searchFields = "?";
+        let searchFields2 = {
             params: {
-                src: this.state.searchString,
-                cat: this.state.selectedCategory.id,
-                geo: this.state.selectedRegion.id,
-                geoprov: this.state.selectedProvince.id,
-                min: this.state.minPriceValue,
-                max: this.state.maxPriceValue
+
             }
+        };
+        if(this.state.searchString != null && this.state.searchString != ''){
+            searchFields += "[src=" + this.state.searchString + "]";
+            searchFields2.params.src = this.state.searchString;
         }
-        console.log(linearizedResearchFields);
-        this.sendData(linearizedResearchFields);
+        if(this.state.selectedSubCategory.id != null){
+            searchFields += "[&cat=" + this.state.selectedSubCategory.id + "]";
+            searchFields2.params.cat = this.state.selectedSubCategory.id;
+        }else if(this.state.selectedCategory.id != null){
+           searchFields += "[&cat=" + this.state.selectedCategory.id + "]";
+           searchFields2.params.cat = this.state.selectedCategory.id;
+        }
+        if(this.state.selectedRegion.id != null){
+            searchFields += "[&geo=" + this.state.selectedRegion.id + "]";
+            searchFields2.params.geo = this.state.selectedRegion.id;
+        }
+        if(this.state.maxPriceValue != null){
+            searchFields += "[&max=" + this.state.maxPriceValue + "]";
+            searchFields2.params.max = this.state.maxPriceValue;
+        }
+        if(searchFields === "?")
+            searchFields = "";
+        console.log(searchFields);
+        this.sendData(searchFields2);
        
     }
 
-    async sendData(linearizedResearchFields){
-        if(linearizedResearchFields.params.min == 0 && linearizedResearchFields.params.max == Infinity && linearizedResearchFields.params.searchField == ''){
-            linearizedResearchFields = null;
-        }
-        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads', linearizedResearchFields).then(
+    async sendData(searchFields){
+        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads', searchFields).then(
             (response) => {
                     this.setState({searchResult: response.data});
+                    console.log(response.data);
                     this.props.reportResult(this.state.searchResult);
                 }
         );
@@ -148,24 +181,31 @@ class SearchBar extends Component {
                         <form className="form-inline my-2 my-lg-0">
                             <input ref={ this.searchField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Search" aria-label="Search"/>
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory.name ? this.state.selectedCategory.name : "Categories"}>
-                            {   this.state.categories.map(
+                            {   (Array.isArray(this.state.categories) && this.state.categories.length) ? this.state.categories.map(
                                     category =>
                                     <Dropdown.Item onClick={ this.setCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
-                                    )
+                                    ) : null
+                                }
+                            </DropdownButton>
+                            <DropdownButton id="dropdown-basic-button" className={this.state.showSubCategories ? "m-2" : "notDisplay" } title={this.state.selectedSubCategory.name ? this.state.selectedSubCategory.name : "Subcategories"}>
+                            {   (Array.isArray(this.state.subcategories) && this.state.subcategories.length) ? this.state.subcategories.map(
+                                    category =>
+                                    <Dropdown.Item onClick={ this.setSubCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
+                                    ) : null
                                 }
                             </DropdownButton>
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedRegion.name ? this.state.selectedRegion.name : "Regions"}>
-                            {   this.state.regions.map(
+                            {   (Array.isArray(this.state.regions) && this.state.regions.length) ? this.state.regions.map(
                                     region =>
                                     <Dropdown.Item onClick={ e => this.setRegion(e) } id={region._id} name={region.name}>{region.name}</Dropdown.Item>
-                                    )
+                                    ) : null
                                 }
                             </DropdownButton>
                             <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces ? "m-2" : "notDisplay" } title={this.state.selectedProvince.name ? this.state.selectedProvince.name : "Provinces"} >
-                            {   this.state.provinces.map(
+                            {   (Array.isArray(this.state.provinces) && this.state.provinces.length) ? this.state.provinces.map(
                                     province =>
                                     <Dropdown.Item onClick={ this.setProvince } id={province._id} name={province.name}>{province.name} </Dropdown.Item>
-                                    )
+                                    ) : null
                                 }
                             </DropdownButton>
                             <input ref={ this.minPriceField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Min" aria-label="Search"/>
