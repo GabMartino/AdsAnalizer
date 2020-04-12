@@ -25,11 +25,32 @@ class Dashboard extends Component {
 	initListeners(){
 
 		this.toggleMyAddsRef.current.addEventListener( "click", () => {
+
+            if( this.toggleMyAddsRef.current.classList.contains("checked") ){
+                this.toggleMyAddsRef.current.checked = false;
+                this.toggleMyAddsRef.current.classList.remove("checked");
+            }else{
+                this.toggleMyAddsRef.current.classList.add("checked");
+                this.toggleFlaggedRef.current.classList.remove("checked");
+            }
+
 			this.props.applyFilter( consts.FILTER_MY_ADS );
+
 		} );
 
 		this.toggleFlaggedRef.current.addEventListener( "click", () => {
+
+            if( this.toggleFlaggedRef.current.classList.contains("checked") ){
+                this.toggleFlaggedRef.current.checked = false;
+                this.toggleFlaggedRef.current.classList.remove("checked");
+            }else{
+                this.toggleFlaggedRef.current.classList.add("checked");
+                this.toggleMyAddsRef.current.classList = "switch";
+
+            }
+
 			this.props.applyFilter( consts.FILTER_FLAGGED );
+
 		} );
 
 		this.toggleStatisticsRef.current.addEventListener( "click", () => {
@@ -44,13 +65,13 @@ class Dashboard extends Component {
 				<div className="switch_wrapper">
 					<p>Mostra i miei annunci</p>
 
-					<input ref={ this.toggleMyAddsRef } type="checkbox" id="switchMyAdds" className="switch" />
+					<input ref={ this.toggleMyAddsRef } type="radio" name="filters" id="switchMyAdds" className="switch" />
 					<label for="switchMyAdds"></label>
 				</div>
 				<div className="switch_wrapper">
 					<p>Mostra annunci segnalati</p>
 
-					<input ref={ this.toggleFlaggedRef } type="checkbox" id="switchFlagged" className="switch" />
+					<input ref={ this.toggleFlaggedRef } type="radio" name="filters" id="switchFlagged" className="switch" />
 					<label for="switchFlagged"></label>
 				</div>
 				<button ref={ this.toggleStatisticsRef } class="btn btn-primary statistics" type="button" aria-expanded="false" aria-controls="collapseExample">Statistiche</button>
