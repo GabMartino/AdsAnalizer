@@ -1,7 +1,7 @@
 .ad_tile{
 
-	height: 100px;
-	width: 500px;
+	height: 200px;
+	width: 600px;
 	display: flex;
 	margin-bottom: 20px;
 	border-radius: 5px;
@@ -21,7 +21,8 @@
 	padding: 0 20px;
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
-	background: rgba( 224, 224, 224, 0.7 );
+	/*background: rgba( 224, 224, 224, 0.7 );*/
+	background: #757575;
 
 }
 
@@ -33,10 +34,10 @@
 
 }
 
-.ad_tile .info{
+.ad_tile .content{
 
 	height: 100%;
-	width: auto;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -44,28 +45,104 @@
 
 }
 
-.ad_tile .info .utils{
+.ad_tile .content .info{
 
+	height: 50%;
+	width: 100%;
 	display: flex;
-	justify-content: flex-end;
-	align-items: center;
+	flex-direction: column;
+	padding: 0 20px;
+	overflow: hidden;
 
 }
 
-.ad_tile .info .title{
+.ad_tile .content .info.primary{
 
-	padding: 0 20px;
-	text-align: left;
+	height: 60%;
+	padding: 10px 20px;
+
+}
+
+.ad_tile .content .info.secondary{
+
+	height: 40%;
+	background: #f9f9f9;
+
+}
+
+.ad_tile .content .info.primary .title{
+
+	max-height: 1.1em;
+	max-width: 420px;
 	font-family: Cereal_Bold;
-	font-size: 1.2em;
+	font-size: 1em;
+	overflow: hidden;
 
 }
 
-.ad_tile .info .description{
+.ad_tile .content .info.primary .description{
 
-	padding: 0 20px;
-	text-align: left;
+	max-height: 6em;
+	max-width: 420px;
 	font-family: Cereal_Book;
 	font-size: 0.8em;
+	overflow: hidden;
 
+}
+
+.ad_tile .content .info .line{
+
+	height: auto;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin: 5px 0;
+
+}
+
+.ad_tile .content .info.secondary .location{
+
+	max-width: 200px;
+    max-height: 1.5em;
+	font-family: Cereal_Book;
+	font-size: 0.8em;
+	color: rgba( 0, 0, 0, 0.6 );
+	overflow: hidden;
+
+}
+
+.ad_tile .content .info.secondary img{
+
+	height: 15px;
+	width: auto;
+	margin-right: 5px;
+	opacity: 0.5;
+
+}
+
+.ad_tile .content .info.secondary .author{
+
+	max-width: 200px;
+    max-height: 1.5em;
+	font-family: Cereal_Book;
+	font-size: 0.8em;
+	color: rgba( 0, 0, 0, 0.6 );
+	overflow: hidden;
+
+}
+
+.ad_tile .content .info.secondary .price{
+
+	max-width: 200px;
+    max-height: 1.5em;
+	font-family: Cereal_Bold;
+	font-size: 1.2em;
+	color: #fd5523;
+	overflow: hidden;
+
+}
+
+.ad_tile .content .info.secondary button{
+	font-family: Cereal_Bold;
 }
