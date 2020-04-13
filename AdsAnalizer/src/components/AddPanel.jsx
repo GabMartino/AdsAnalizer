@@ -23,10 +23,10 @@ class AddPanel extends Component {
         title: "",
         description: "",
         price: null,
-        selectedCategory: { id: null, value: null},
-        selectedSubCategory: {id: null, name:null},
-        selectedRegion: { id: null, value: null},
-        selectedProvince: { id: null, value: null},
+        selectedCategory: null,
+        selectedSubCategory: null,
+        selectedRegion: null,
+        selectedProvince: null,
         regions: [],
         categories: [],
         subcategories: [],
@@ -57,13 +57,10 @@ class AddPanel extends Component {
     }
     
     async setCategory(event){
-        let prop = {...this.selectedCategory};
-        prop.id = event.target.id;
-        prop.name = event.target.name;
-        this.setState({ selectedCategory: prop});
-        this.setState({ selectedSubCategory: { id: null, name: null} });
-        //console.log(window.location.hostname);
-        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories/'+prop.id).then(
+        const selectedCategory = Array.isArray(this.state.categories) && this.state.categories.find(category => category._id === event.target.id);
+        this.setState({ selectedCategory: selectedCategory});
+        this.setState({ selectedSubCategory: null });
+        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories/'+selectedCategory._id).then(
             (response) => {
                 this.setState({subcategories: response.data});
                 
@@ -72,29 +69,24 @@ class AddPanel extends Component {
         this.setState({ showSubCategories: true });
     }
     setSubCategory(event){
-        let prop = {...this.state.selectedSubCategory};
-        prop.id = event.target.id;
-        prop.name = event.target.name;
-        this.setState({ selectedSubCategory: prop });
+        const selectedSubCategory = Array.isArray(this.state.subcategories) && this.state.subcategories.find(category => category._id === event.target.id);
+        this.setState({ selectedSubCategory: selectedSubCategory });
 
     }
     setProvince(event){
-        let prop = {...this.state.selectedProvince};
-        prop.id = event.target.id;
-        prop.name = event.target.name;
-        this.setState({ selectedProvince: prop });
+        const selectedProvince = Array.isArray(this.state.provinces) && this.state.provinces.find(province => province._id === event.target.id);
+        this.setState({ selectedProvince: selectedProvince });
 
     }
 
    
     async setRegion(event){
         event.preventDefault();
-        let prop = {...this.state.selectedRegion};
-        prop.id = event.target.id;
-        prop.name = event.target.name;
-       
-        this.setState({selectedRegion: prop });
-        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/'+prop.id).then(
+        const selectedRegion = Array.isArray(this.state.regions) && this.state.regions.find(region => region._id === event.target.id);
+        this.setState({selectedRegion: selectedRegion });
+        this.setState({selectedProvince: null });
+        //console.log(window.location.hostname);
+        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/'+selectedRegion._id).then(
             (response) => {
                 this.setState({provinces: response.data});
                 
@@ -170,34 +162,38 @@ class AddPanel extends Component {
                     <label >Description</label>
                     <input ref={ this.adDescription } type="text" onChange={this.handleChange} className="form-control"  placeholder="Description"/>
                 </div>
-                <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory.name ? this.state.selectedCategory.name : "Categories"}>
+                <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory ? this.state.selectedCategory.name : "Categories"}>
                     {   (Array.isArray(this.state.categories) && this.state.categories.length) ? this.state.categories.map(
                             category =>
                             <Dropdown.Item onClick={ this.setCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
                             ) : null
                         }
                 </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" className={this.state.showSubCategories ? "m-2" : "notDisplay" } title={this.state.selectedSubCategory.name ? this.state.selectedSubCategory.name : "Subcategories"}>
+                <DropdownButton id="dropdown-basic-button" className={this.state.showSubCategories ? "m-2" : "notDisplay" } title={this.state.selectedSubCategory ? this.state.selectedSubCategory.name : "Subcategories"}>
                     {   (Array.isArray(this.state.subcategories) && this.state.subcategories.length) ? this.state.subcategories.map(
                             category =>
                             <Dropdown.Item onClick={ this.setSubCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
                             ) : null
                         }
                 </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedRegion.name ? this.state.selectedRegion.name : "Regions"}>
+                <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedRegion ? this.state.selectedRegion.name : "Regions"}>
                     {   (Array.isArray(this.state.regions) && this.state.regions.length) ? this.state.regions.map(
                             region =>
                             <Dropdown.Item onClick={ e => this.setRegion(e) } id={region._id} name={region.name}>{region.name}</Dropdown.Item>
                             ) : null
                         }
                 </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces ? "m-2" : "notDisplay" } title={this.state.selectedProvince.name ? this.state.selectedProvince.name : "Provinces"} >
+                <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces ? "m-2" : "notDisplay" } title={this.state.selectedProvince ? this.state.selectedProvince.name : "Provinces"} >
                     {   (Array.isArray(this.state.provinces) && this.state.provinces.length) ? this.state.provinces.map(
                             province =>
                             <Dropdown.Item onClick={ this.setProvince } id={province._id} name={province.name}>{province.name} </Dropdown.Item>
                             ) : null
                         }
                 </DropdownButton>
+                <div className={this.state.selectedProvince ? "form-group m-2" : "notDisplay" }>
+                    <label >Town</label>
+                    <input ref={ this.town } type="text" onChange={this.handleChange} className="form-control"  placeholder="Town"/>
+                </div>
                 <div className="form-group">
                     <label >Price</label>
                     <input ref={ this.adPrice } type="text" onChange={this.handleChange} className="form-control"  placeholder="Price"/>

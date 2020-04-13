@@ -149,6 +149,9 @@ module.exports = {
             query = {
                 $and: []
             };
+            if(req.query.pag != undefined){
+                query = {};
+            }
             if(req.query.src != undefined && req.query.src != ''){
                 query.$and.push({
                         

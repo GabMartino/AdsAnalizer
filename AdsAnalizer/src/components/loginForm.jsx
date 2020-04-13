@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 class LoginForm extends Component {
 
@@ -40,12 +41,23 @@ class LoginForm extends Component {
 
     async sendData(obj, data){
         await axios.put('http://'+window.location.hostname+':'+this.props.webServerPort+'/login', data, {
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true
           }).then(function (response){
                 console.log(response);
                 if(response.status == 200 && response.data != "notFound"){
                        // obj.setState({userLogged: response.data});
-                        obj.props.doLogIn(response.data);
+                        const cookies = new Cookies(); 
+                        let name = cookies.get("name");
+                        let id = cookies.get("userId");
+                        let isAdmin = cookies.get("admin");
+                        let userData = {
+                            _id: id,
+                            name: name,
+                            isAdmin: isAdmin
+                        };
+                       
+                       obj.props.doLogIn(userData);
                 }else{
                         alert("Username or Password wrong");
                 }

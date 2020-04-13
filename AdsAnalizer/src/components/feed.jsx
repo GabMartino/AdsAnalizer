@@ -23,8 +23,8 @@ class Feed extends Component {
                     body={ad.body}
                     title={ad.subject}
                     region= {ad.geo.region.value}
-                    province= {ad.geo.province.value}
-                    //town= {ad.geo.town.value}
+                    province= {ad.geo.province.shortName}
+                    town= {ad.geo.town != null ? ad.geo.town.value : null }
                     price= {Array.isArray(ad.features) && ad.features.length ? ad.features[0].value : null}
                     author={ad.advertiser.name}
                 />)  : null

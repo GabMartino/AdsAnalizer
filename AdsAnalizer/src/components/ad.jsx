@@ -53,9 +53,7 @@ class Ad extends Component {
                         <div className="line">
                             <div className="location">
                                 <img src={ location } />
-                                { this.state.region }
-                                { this.state.province }
-                                { this.state.town }
+                                <b>{ this.state.province } { this.state.town != null ? this.state.town : null } </b>
                             </div>
                             <div className="author">
                                 <img src={ user } />
