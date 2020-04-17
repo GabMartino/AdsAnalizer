@@ -109,7 +109,7 @@ class AddPanel extends Component {
         }
     }
     handleSubmit(){
-        if( this.state.title != "" && this.state.description != "" && this.state.selectedCategory.id != null){
+        if( this.state.title != "" && this.state.description != "" && this.state.selectedCategory != null){
             var actualDateTime = new Date();
             actualDateTime = actualDateTime.getFullYear() + "-" + actualDateTime.getMonth() + "-" + actualDateTime.getDay() + " " +
                                 actualDateTime.getHours() + ":" + actualDateTime.getMinutes() + ":" + actualDateTime.getSeconds();
@@ -120,8 +120,8 @@ class AddPanel extends Component {
                 features: [{ name: "Prezzo", value: parseFloat(this.state.price)}],
                 category:  this.state.selectedCategory,
                 advertiser: { name: this.state.actualUser.name,
-                                phone: this.state.actualUser.telephone,
-                                userId: this.state.actualUser.id },
+                                phone: this.state.actualUser.phone,
+                                userId: this.state.actualUser._id },
                 geo: { region: this.state.selectedRegion, province: this.state.selectedProvince}
 
             }
@@ -141,8 +141,9 @@ class AddPanel extends Component {
                 if(response.status == 200 && response.data != "notFound"){
                        // obj.setState({userLogged: response.data});
                        // obj.props.doLogIn(response.data);
+                       alert("The add has been successfully added.");
                 }else{
-                        alert("Username or Password wrong");
+                        alert("Something gone wrong");
                 }
             
           }).catch(function (error) {

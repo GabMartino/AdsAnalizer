@@ -18,7 +18,7 @@ import consts from './consts';
 class App extends Component {
 
 
-    webServerPort = 8080;
+    webServerPort = 3001;
     state = {
         userLogged: {},
         showLogIn: false,
@@ -41,7 +41,7 @@ class App extends Component {
         this.closeStatistics = React.createRef();
         this.addRef = React.createRef();
         this.fetchAds = this.fetchAds.bind(this);
-
+        this.deleteAd = this.deleteAd.bind(this);
     }
 
     componentDidMount(){
@@ -116,32 +116,32 @@ class App extends Component {
 
         console.log( "Filter applied: " );
         console.log( this.state.filter );
-        var params = {
+        let searchParams = {
             params: {
                 pag: 1
             }
         };
         if(this.state.filter == consts.FILTER_MY_ADS){//for ads of a user
-            params = {
+            searchParams = {
                 params: {
-                    uid: this.state.userLogged.id
+                    uid: this.state.userLogged._id
                 }
             }
         }else if(this.state.filter == consts.FILTER_FLAGGED) {// for reported ads
-            params = {
+            searchParams = {
                 params: {
                     rep: 1
                 }
             }
         }
 
-        this.fetchAds(this, params);
+        this.fetchAds(this, searchParams);
         
 
     }
     async fetchAds(obj,params){
         await axios.get('http://'+window.location.hostname+':'+this.webServerPort+'/ads',params).then(function (response){
-                //console.log(response);
+                console.log(response);
                 if(response.status == 200){
                     obj.setState({ searchResult: response.data});
                     console.log("oook");
@@ -234,7 +234,71 @@ class App extends Component {
                 console.log(error);
           });
     }
+    async deleteAd(adId){
+        console.log(adId);
+        console.log(adId);
+        const ad = this.state.searchResult.find( ad => ad._id == adId);
+        console.log(ad);
+        if(ad && ad.advertiser.userId == this.state.userLogged._id){
+            console.log("cancellazione");
+            await axios.delete('http://'+window.location.hostname+':'+this.webServerPort+'/ads/'+adId).then(function (response){
+                console.log(response);
+                if(response.status == 200){
+                        console.log("Delete Succeded.");
+                }else{
+                        alert("Something's gone wrong");
+                }
+            
+          }).catch(function (error) {
+              console.error(error);
+           
+            });
+        }
     
+    }
+    async reportAd(adId){
+        
+        const ad = this.state.searchResult.find( ad => ad._id == adId);
+        console.log(ad);
+        if(ad){
+            let params = {
+                report: true
+            }
+            await axios.put('http://'+window.location.hostname+':'+this.webServerPort+'/ads/'+adId, params, {
+                headers: { 'Content-Type': 'application/json' }
+                
+            }).then(function (response){
+                console.log(response);
+                if(response.status == 200){
+                        console.log("Reporting Succeded.");
+                }else{
+                        alert("Something's gone wrong");
+                }
+            
+          }).catch(function (error) {
+            if (error.response) {
+                /*
+                 * The request was made and the server responded with a
+                 * status code that falls out of the range of 2xx
+                 */
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                /*
+                 * The request was made but no response was received, `error.request`
+                 * is an instance of XMLHttpRequest in the browser and an instance
+                 * of http.ClientRequest in Node.js
+                 */
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request and triggered an Error
+                console.log('Error', error.message);
+            }
+          });
+        }
+    }
+
     fetchSearchResult(result){
         console.log(result);
         this.setState({searchResult: result});
@@ -269,9 +333,12 @@ class App extends Component {
                     />
                 </div>
                 <Feed
+                    userLoggedId = { this.state.userLogged._id}
                     webServerPort={ this.webServerPort }
                     adsList={ this.state.searchResult }
                     reportResult = { this.fetchSearchResult.bind(this)}
+                    deleteAd = {this.deleteAd.bind(this)}
+                    reportAd = {this.reportAd.bind(this)}
                 ></Feed>
                 <div ref={ this.closeLogInRef } className={ this.state.showLogIn ? "form_wrapper show_form" : "form_wrapper" }>
                   <LoginForm  doLogIn={ this.doLogIn.bind(this)}

@@ -8,26 +8,45 @@ import user from '../assets/icons/user.png';
 
 class Ad extends Component {
     state = {
+        textButton: "Buy now",
+        id: this.props.id,
         title: this.props.title,
         body: this.props.body,
         region: this.props.region,
         province: this.props.province,
         town: this.props.town,
         price: this.props.price,
-        author: this.props.author
+        author: this.props.author,
+        phoneNumber: this.props.phoneNumber,
+        showDelete: this.props.showDelete,
+        reported: this.props.reported
      }
     constructor(props){
         super(props);
+        //this.showPhoneNumber = this.showPhoneNumber.bind(this);
     }
     componentWillReceiveProps(props){
-        this.setState({ title: props.title,
+        this.setState({ id: props.id,
+                        title: props.title,
                         body: props.body,
                         region: props.region,
                         province: props.province,
                         town: props.town,
                         price: props.price,
-                        author: props.author});
+                        author: props.author,
+                        phoneNumber: props.phoneNumber,
+                        showDelete: props.showDelete,
+                        reported: props.reported});
         //this.setState(this.state);
+    }
+    
+    showPhoneNumber(){
+        if(this.state.textButton != "Buy now"){
+            this.setState({textButton: "Buy now"})
+            return;
+        }
+        this.setState({ textButton: this.state.phoneNumber});
+
     }
     render() {
         return (
@@ -36,6 +55,7 @@ class Ad extends Component {
                 <div className="img">
                     <img src={ placeholder } alt="Generic placeholder image"/>
                 </div>
+                <button onClick={ () => this.props.deleteAd(this.state.id)} class={this.state.showDelete ? "btn btn-outline-success my-2 my-sm-0": "notDisplay"} type="submit">Delete</button>
                 <div className="content">
                     <div className="info primary">
                         <div className="line">
@@ -49,6 +69,7 @@ class Ad extends Component {
                             </div>
                         </div>
                     </div>
+                    <button onClick={ () => this.props.reportAd(this.state.id)} class={!this.state.reported ? "btn btn-outline-success my-2 my-sm-0": "btn btn-outline-danger my-2 my-sm-0"} type="submit">Report</button>
                     <div className="info secondary">
                         <div className="line">
                             <div className="location">
@@ -64,7 +85,7 @@ class Ad extends Component {
                             <div className="price">
                                 {this.state.price}
                             </div>
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buy now</button>
+                            <button onClick={() =>this.showPhoneNumber()} class="btn btn-outline-success my-2 my-sm-0" type="submit" >{this.state.textButton}</button>
                         </div>
                     </div>
                 </div>

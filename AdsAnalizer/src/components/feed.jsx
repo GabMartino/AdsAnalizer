@@ -12,21 +12,28 @@ class Feed extends Component {
     componentWillReceiveProps(props){
         if(props.adsList != null){
             this.setState({ ads: props.adsList});
+          
         }
-      
+        
     }
     render() {
         return (
             <div id="feed">
                 
                 { Array.isArray(this.state.ads) && this.state.ads.length ? this.state.ads.map( ad => <Ad
+                    id = {ad._id}
                     body={ad.body}
                     title={ad.subject}
-                    region= {ad.geo.region.value}
-                    province= {ad.geo.province.shortName}
+                    region= {ad.geo.region != null ? ad.geo.region.value : null}
+                    province= {ad.geo.province != null ? ad.geo.province.shortName : null}
                     town= {ad.geo.town != null ? ad.geo.town.value : null }
                     price= {Array.isArray(ad.features) && ad.features.length ? ad.features[0].value : null}
                     author={ad.advertiser.name}
+                    phoneNumber ={ad.advertiser.phone}
+                    reported= {ad.report ? ad.report : false}
+                    showDelete = {parseInt(ad.advertiser.userId) == parseInt(this.props.userLoggedId)}
+                    deleteAd = { this.props.deleteAd}
+                    reportAd = { this.props.reportAd}
                 />)  : null
             }
 

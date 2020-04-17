@@ -59,12 +59,34 @@ async function categoriesHandler(client, query){
 }
 async function adsAddHandler(client, query){
     try{
+        query._id = "999999";
         const result = await client.db(dbname).collection("ads").insertOne(query);
         return await result;
     }catch(e){
         console.log(e);
     }
 }
+async function updateAdHandler(client, json){//just for reporting
+    try{
+        let value = true;
+        if(json.report != undefined){
+            value = !json.report;
+        }
+        const result = await client.db(dbname).collection("ads").updateOne(json, {$set : {"report": value}});
+        return await result;
+    }catch(e){
+        console.log(e);
+    }
+}
+async function deleteAdHandler(client, query){
+    try{
+        const result = await client.db(dbname).collection("ads").deleteOne(query);
+        return await result;
+    }catch(e){
+        console.log(e);
+    }
+}
+
 async function geoDBHandler(client, query){
     try{
         const result = await client.db(dbname).collection("geo").find(query);
@@ -93,7 +115,11 @@ module.exports = {
                 telephone: result.telephone,
                 admin: result.admin 
             }
-            res.json(responseBack);
+            res.cookie("sessionId",Math.random() * Math.floor(99999999));
+            res.cookie("userId",result._id);
+            res.cookie("name",result.name);
+            res.cookie("admin", result.admin);
+            res.send("ok");
         }else{
             res.send("notFound");
         }
@@ -119,11 +145,52 @@ module.exports = {
         }
         
     },
+    deleteAdsRequest: async function (req, res){
+        
+        console.log(req.query);    
+        let query = {};
+        if(req.params.val){
+            query = {
+                _id: req.params.val
+            }
+        }
+        var result = await sendDBRequest(deleteAdHandler, query).catch(console.err);
+        //console.log(result);
+        if(result){
+            res.send("ok");
+        }else{
+            res.send("error");
+        }
+        
+    },
     handleAdsAddRequest: async function (req, res){
         //console.log(req.body);
         var result = await sendDBRequest(adsAddHandler, req.body).catch(console.err);
         //console.log(result);
-        if(result.insertedId){
+        if(result){
+            res.send("ok");
+        }else{
+            res.send("error");
+        }
+        
+    },
+    reportAdRequest: async function (req, res){
+        
+        console.log("Report request");
+        let query = {}
+        if(req.params.val){
+            query = {
+                _id: req.params.val
+            }
+        }
+        var document = await sendDBRequest(adsDBHandler, query).catch(console.err);
+        /*let newField = {
+            'report': req.body.report
+        }
+        console.log(document[0]);*/
+        var result = await sendDBRequest(updateAdHandler, document[0]).catch(console.err);
+        
+        if(result){
             res.send("ok");
         }else{
             res.send("error");
@@ -131,13 +198,15 @@ module.exports = {
         
     },
 
-
-
-
     handleAdsRequest: async function (req, res){
         //console.log(req);
         console.log(req.query);    
         var query = {};
+        if(req.params.val){
+            query = {
+                _id: req.params.val
+            }
+        }
         if(req.query.constructor === Object && Object.keys(req.query).length === 0) {
             console.log('Object missing');
         }else if(req.query.uid != undefined){
@@ -209,57 +278,15 @@ module.exports = {
 
                 });
             }
-            if(req.query.uid != undefined){
-                query.$and.push(
-                    {
-                        'advertiser.userId': req.query.uid
+            if(Array.isArray(query.$and)){
+                for( var i = query.$and.length -1 ; i >= 0; i--){
+                    var obj = query.$and[i];
+                    if(obj[Object.keys(obj)[0]] == undefined){
+                        query.$and.splice(i,1);
                     }
-                )
-            }
-
-            /*
-            query = {
-                $and: [
-                    {
-                        
-                        $or: [
-                            {'subject': { $regex: req.query.src,  $options: 'i' }},
-                            {'body': { $regex: req.query.src,  $options: 'i' }}
-                        ],
-                                               
-                    },
-                    {
-                        'category.id':   req.query.cat
-                    },
-                    {
-                        'geo.region.id':   req.query.geo 
-                    },
-                    {
-                        'geo.province.id':   req.query.geoprov
-                    },
-                    {
-                        $and:[
-                            {
-                                'features.0.value': { $gte: parseFloat(req.query.min)}
-                            },
-                            {
-                                'features.0.value': { $lte: parseFloat(req.query.max) }
-                            }
-                        ] 
-                    },
-                    {
-                        'advertiser.userId': req.query.uid
-                    }
-                    
-                ]
-            };
-            */
-            for( var i = query.$and.length -1 ; i >= 0; i--){
-                var obj = query.$and[i];
-                if(obj[Object.keys(obj)[0]] == undefined){
-                    query.$and.splice(i,1);
                 }
             }
+            
         }
         console.log(query);
         var result = await sendDBRequest(adsDBHandler, query).catch(console.err);

@@ -71,11 +71,11 @@ class SearchBar extends Component {
                 this.setState({searchString: event.target.value});
                 break;
             case this.minPriceField.current:
-                var value = event.target.value != '' ? event.target.value : 0;
+                var value = event.target.value != '' ? event.target.value : null;
                 this.setState({minPriceValue: value});
                 break;
             case this.maxPriceField.current:
-                var value = event.target.value != '' ? event.target.value : Infinity;
+                var value = event.target.value != '' ? event.target.value : null;
                 this.setState({maxPriceValue: value});
         }
     }
@@ -137,9 +137,12 @@ class SearchBar extends Component {
         }
         if(this.state.selectedRegion != null){
             searchFields.params.geo = this.state.selectedRegion._id;
+            if(this.state.selectedProvince != null){
+                searchFields.params.geo = this.state.selectedProvince._id;
+            }
         }
         if(this.state.minPriceValue != null){
-            searchFields.params.max = this.state.maxPriceValue;
+            searchFields.params.min = this.state.minPriceValue;
         }
         if(this.state.maxPriceValue != null){
             searchFields.params.max = this.state.maxPriceValue;
