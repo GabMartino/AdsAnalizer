@@ -8,6 +8,7 @@ import user from '../assets/icons/user.png';
 
 class Ad extends Component {
     state = {
+        admin: false,
         textButton: "Buy now",
         id: this.props.id,
         title: this.props.title,
@@ -26,7 +27,8 @@ class Ad extends Component {
         //this.showPhoneNumber = this.showPhoneNumber.bind(this);
     }
     componentWillReceiveProps(props){
-        this.setState({ id: props.id,
+        this.setState({ admin: props.admin,
+                        id: props.id,
                         title: props.title,
                         body: props.body,
                         region: props.region,
@@ -55,21 +57,25 @@ class Ad extends Component {
                 <div className="img">
                     <img src={ placeholder } alt="Generic placeholder image"/>
                 </div>
-                <button onClick={ () => this.props.deleteAd(this.state.id)} class={this.state.showDelete ? "btn btn-outline-success my-2 my-sm-0": "notDisplay"} type="submit">Delete</button>
+                
+                <div className={ this.state.reported && this.state.admin ? "" : "notDisplay"}>{this.state.reported }</div>
                 <div className="content">
                     <div className="info primary">
                         <div className="line">
                             <div className="title">
                                 { this.state.title }
                             </div>
+                            <button onClick={ () => this.props.deleteAd(this.state.id)} class={this.state.showDelete ? "btn btn-outline-success my-2 my-sm-0": "notDisplay"} type="submit">Delete</button>
+                            <button onClick={ () => this.props.reportAd(this.state.id)} class="btn btn-outline-success my-2 my-sm-0" type="submit">Report</button>
                         </div>
                         <div className="line">
                             <div className="description">
                                 { this.state.body }
                             </div>
+                            
                         </div>
                     </div>
-                    <button onClick={ () => this.props.reportAd(this.state.id)} class={!this.state.reported ? "btn btn-outline-success my-2 my-sm-0": "btn btn-outline-danger my-2 my-sm-0"} type="submit">Report</button>
+                    
                     <div className="info secondary">
                         <div className="line">
                             <div className="location">

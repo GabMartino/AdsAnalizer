@@ -1,8 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
 var accepts = require('mongodb-language-model').accepts;
 //////////////////////// MAIN FUNCTION FOR DB CALLS
-//const url = 'mongodb://localhost:27017';
-const url = 'mongodb://80.112.184.23:810/';
+const url = 'mongodb://localhost:27017';
+//const url = 'mongodb://80.112.184.23:810/';
 const dbname = "maga";
 
 
@@ -66,13 +66,17 @@ async function adsAddHandler(client, query){
         console.log(e);
     }
 }
-async function updateAdHandler(client, json){//just for reporting
+async function updateAdHandler(client, query){//just for reporting
     try{
-        let value = true;
-        if(json.report != undefined){
-            value = !json.report;
+        let newQuery = {
+            _id : query._id
         }
-        const result = await client.db(dbname).collection("ads").updateOne(json, {$set : {"report": value}});
+        let result = await client.db(dbname).collection("ads").findOne(newQuery);
+        if(result.report != undefined )
+            result = await client.db(dbname).collection("ads").updateOne(result, {$set : {"report": query.report? result.report + 1 : result.report - 1}});
+        else
+            result = await client.db(dbname).collection("ads").updateOne(result, {$set : {"report": 1}});
+        
         return await result;
     }catch(e){
         console.log(e);
@@ -180,15 +184,16 @@ module.exports = {
         let query = {}
         if(req.params.val){
             query = {
-                _id: req.params.val
+                _id: req.params.val,
+                report: req.body.report
             }
         }
-        var document = await sendDBRequest(adsDBHandler, query).catch(console.err);
+        //var document = await sendDBRequest(adsDBHandler, query).catch(console.err);
         /*let newField = {
             'report': req.body.report
         }
         console.log(document[0]);*/
-        var result = await sendDBRequest(updateAdHandler, document[0]).catch(console.err);
+        var result = await sendDBRequest(updateAdHandler, query).catch(console.err);
         
         if(result){
             res.send("ok");
@@ -239,15 +244,13 @@ module.exports = {
                 });
             }
             if(req.query.geo != undefined){
-                query.$and.push( {
-                    'geo.region.id':   req.query.geo 
+                query.$and.push( { 
+                    $or: [ {'geo.region.id':  req.query.geo },
+                        {'geo.province.id':  req.query.geo }
+                        ]
                 });
             }
-            if(req.query.geoprov != undefined){
-                query.$and.push( {
-                    'geo.province.id':   req.query.geoprov
-                });
-            }
+          
             if(req.query.min != undefined && req.query.max != undefined){
                 
                 query.$and.push({
@@ -276,6 +279,10 @@ module.exports = {
                         }
                     ]
 
+                });
+            }else if(req.query.rep != undefined){
+                query.$and.push({
+                    'report': { $gt: 0}
                 });
             }
             if(Array.isArray(query.$and)){

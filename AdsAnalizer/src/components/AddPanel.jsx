@@ -41,7 +41,7 @@ class AddPanel extends Component {
     }
 
     async fetchData(){
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories/0'
+        axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/0'
         ).then(
             (response) => {
                 console.log(response);
@@ -49,7 +49,7 @@ class AddPanel extends Component {
                 }
         );
 
-        axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/0').then(
+        axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/geos/0').then(
             (response) => {
                 this.setState({regions: response.data});
                 }
@@ -60,7 +60,7 @@ class AddPanel extends Component {
         const selectedCategory = Array.isArray(this.state.categories) && this.state.categories.find(category => category._id === event.target.id);
         this.setState({ selectedCategory: selectedCategory});
         this.setState({ selectedSubCategory: null });
-        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/categories/'+selectedCategory._id).then(
+        await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/'+selectedCategory._id).then(
             (response) => {
                 this.setState({subcategories: response.data});
                 
@@ -86,7 +86,7 @@ class AddPanel extends Component {
         this.setState({selectedRegion: selectedRegion });
         this.setState({selectedProvince: null });
         //console.log(window.location.hostname);
-        await axios.get('http://'+window.location.hostname+':'+this.props.webServerPort+'/geos/'+selectedRegion._id).then(
+        await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/geos/'+selectedRegion._id).then(
             (response) => {
                 this.setState({provinces: response.data});
                 
@@ -134,7 +134,7 @@ class AddPanel extends Component {
 
     }
     async sendData(obj, data){
-        await axios.post('http://'+window.location.hostname+':'+this.props.webServerPort+'/ads', data, {
+        await axios.post('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/ads', data, {
             headers: { 'Content-Type': 'application/json' },
             }).then(function (response){
                 console.log(response);

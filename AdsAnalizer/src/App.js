@@ -18,7 +18,8 @@ import consts from './consts';
 class App extends Component {
 
 
-    webServerPort = 3001;
+    webServerPort = 8080;
+    webServerIP = window.location.hostname;
     state = {
         userLogged: {},
         showLogIn: false,
@@ -60,7 +61,7 @@ class App extends Component {
             let userData = {
                 _id: id,
                 name: name,
-                isAdmin: isAdmin
+                isAdmin: isAdmin == "true"
             };
             this.doLogIn(userData);
         }
@@ -140,7 +141,7 @@ class App extends Component {
 
     }
     async fetchAds(obj,params){
-        await axios.get('http://'+window.location.hostname+':'+this.webServerPort+'/ads',params).then(function (response){
+        await axios.get('http://'+this.webServerIP+':'+this.webServerPort+'/ads',params).then(function (response){
                 console.log(response);
                 if(response.status == 200){
                     obj.setState({ searchResult: response.data});
@@ -222,7 +223,7 @@ class App extends Component {
     }
 
     async logoutRequest(obj, data){
-        await axios.put('http://'+window.location.hostname+':'+this.webServerPort+'/logout').then(function (response){
+        await axios.put('http://'+this.webServerIP+':'+this.webServerPort+'/logout').then(function (response){
                 console.log(response);
                 if(response.status == 200){
                         console.log("Logout Succeded.");
@@ -241,7 +242,7 @@ class App extends Component {
         console.log(ad);
         if(ad && ad.advertiser.userId == this.state.userLogged._id){
             console.log("cancellazione");
-            await axios.delete('http://'+window.location.hostname+':'+this.webServerPort+'/ads/'+adId).then(function (response){
+            await axios.delete('http://'+this.webServerIP+':'+this.webServerPort+'/ads/'+adId).then(function (response){
                 console.log(response);
                 if(response.status == 200){
                         console.log("Delete Succeded.");
@@ -264,7 +265,7 @@ class App extends Component {
             let params = {
                 report: true
             }
-            await axios.put('http://'+window.location.hostname+':'+this.webServerPort+'/ads/'+adId, params, {
+            await axios.put('http://'+this.webServerIP+':'+this.webServerPort+'/ads/'+adId, params, {
                 headers: { 'Content-Type': 'application/json' }
                 
             }).then(function (response){
@@ -319,13 +320,16 @@ class App extends Component {
 
                 />
                 <SearchBar
+                    webServerIP = {this.webServerIP}
                     webServerPort={ this.webServerPort }
                     reportResult = { this.fetchSearchResult.bind(this)}
                 />
                 <Dashboard 
+                        isAdmin = {this.state.userLogged.isAdmin}
                         userIsLogged={ this.state.userIsLogged } 
                         applyFilter={ this.applyFilter.bind(this) } 
-                        showStatistics={ this.showStatistics.bind(this) }/>
+                        showStatistics={ this.showStatistics.bind(this) }
+                />
                 <div ref={ this.closeStatistics } className={ this.state.showStatistics ? "form_wrapper show_form" : "form_wrapper" }>
                     <Statistics
                         dataset={this.state.searchResult}
@@ -333,6 +337,8 @@ class App extends Component {
                     />
                 </div>
                 <Feed
+                    webServerIP = {this.webServerIP}
+                    admin = {this.state.userLogged.isAdmin}
                     userLoggedId = { this.state.userLogged._id}
                     webServerPort={ this.webServerPort }
                     adsList={ this.state.searchResult }
@@ -342,19 +348,23 @@ class App extends Component {
                 ></Feed>
                 <div ref={ this.closeLogInRef } className={ this.state.showLogIn ? "form_wrapper show_form" : "form_wrapper" }>
                   <LoginForm  doLogIn={ this.doLogIn.bind(this)}
-                            webServerPort={ this.webServerPort }>
-
+                            webServerPort={ this.webServerPort }
+                            webServerIP = {this.webServerIP}
+                        >
+                                
                     </LoginForm>
                 </div>
                 <div ref={ this.closeSignUpRef } className={ this.state.showSignUp ? "form_wrapper show_form" : "form_wrapper" }>
                     <SignUpForm  doSignUp={ this.doSignUp.bind(this) }
                                 webServerPort={ this.webServerPort }
+                                webServerIP = {this.webServerIP}
                     ></SignUpForm>
                 </div>
                 <div ref={ this.closeAddRef } className={ this.state.showAdd ? "form_wrapper show_form" : "form_wrapper" }>
                     <AddPanel
                         actualUser= {this.state.userLogged}
                         webServerPort={this.webServerPort}
+                        webServerIP = {this.webServerIP}
                         showAdd = {this.showAdd.bind(this)}
                     />
                 </div>

@@ -21,6 +21,7 @@ class Feed extends Component {
             <div id="feed">
                 
                 { Array.isArray(this.state.ads) && this.state.ads.length ? this.state.ads.map( ad => <Ad
+                    admin = {this.props.admin}
                     id = {ad._id}
                     body={ad.body}
                     title={ad.subject}

@@ -40,7 +40,7 @@ class LoginForm extends Component {
     }
 
     async sendData(obj, data){
-        await axios.put('http://'+window.location.hostname+':'+this.props.webServerPort+'/login', data, {
+        await axios.put('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/login', data, {
             headers: { 'Content-Type': 'application/json' },
             withCredentials: true
           }).then(function (response){
@@ -82,10 +82,7 @@ class LoginForm extends Component {
                     <label for="exampleInputPassword1">Password</label>
                     <input type="password" className="form-control" value= {this.state.password} onChange={this.handleChangeOnPassword}  id="exampleInputPassword1" placeholder="Password"/>
                 </div>
-                <div className="form-check">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-                    <label className="form-check-label" for="exampleCheck1">Check me out</label>
-                </div>
+                
                 <button type="submit" onClick= {e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
             </form>
 

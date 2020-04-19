@@ -25,31 +25,28 @@ class Dashboard extends Component {
 	initListeners(){
 
 		this.toggleMyAddsRef.current.addEventListener( "click", () => {
-
-            if( this.toggleMyAddsRef.current.classList.contains("checked") ){
-                this.toggleMyAddsRef.current.checked = false;
-                this.toggleMyAddsRef.current.classList.remove("checked");
-            }else{
+            if(!this.toggleMyAddsRef.current.classList.contains("checked")){
                 this.toggleMyAddsRef.current.classList.add("checked");
-                this.toggleFlaggedRef.current.classList.remove("checked");
+                this.toggleMyAddsRef.current.checked = true;
+                this.props.applyFilter( consts.FILTER_MY_ADS );
+            }else{
+                this.toggleMyAddsRef.current.classList.remove("checked");
+                this.toggleMyAddsRef.current.checked = false;
+                this.props.applyFilter( null );
             }
-
-			this.props.applyFilter( consts.FILTER_MY_ADS );
-
 		} );
 
 		this.toggleFlaggedRef.current.addEventListener( "click", () => {
 
-            if( this.toggleFlaggedRef.current.classList.contains("checked") ){
-                this.toggleFlaggedRef.current.checked = false;
-                this.toggleFlaggedRef.current.classList.remove("checked");
-            }else{
+            if(!this.toggleFlaggedRef.current.classList.contains("checked")){
                 this.toggleFlaggedRef.current.classList.add("checked");
-                this.toggleMyAddsRef.current.classList = "switch";
-
+                this.toggleFlaggedRef.current.checked = true;
+                this.props.applyFilter( consts.FILTER_FLAGGED );
+            }else{
+                this.toggleFlaggedRef.current.classList.remove("checked");
+                this.toggleFlaggedRef.current.checked = false;
+                this.props.applyFilter( null );
             }
-
-			this.props.applyFilter( consts.FILTER_FLAGGED );
 
 		} );
 
@@ -62,13 +59,13 @@ class Dashboard extends Component {
     render() {
         return (
             <div id="dashboard" className={ this.props.userIsLogged ? "show" : "" }>
-				<div className="switch_wrapper">
+				<div className={!this.props.isAdmin ? "switch_wrapper" : "notDisplay"}>
 					<p>Mostra i miei annunci</p>
 
 					<input ref={ this.toggleMyAddsRef } type="radio" name="filters" id="switchMyAdds" className="switch" />
 					<label for="switchMyAdds"></label>
 				</div>
-				<div className="switch_wrapper">
+				<div className={this.props.isAdmin ? "switch_wrapper" : "notDisplay"}>
 					<p>Mostra annunci segnalati</p>
 
 					<input ref={ this.toggleFlaggedRef } type="radio" name="filters" id="switchFlagged" className="switch" />

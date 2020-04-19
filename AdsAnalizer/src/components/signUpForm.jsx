@@ -53,7 +53,7 @@ class SignUpForm extends Component {
     }
 
     async sendData(data){
-        await axios.post('http://'+window.location.hostname+':'+this.props.webServerPort+'/users', data, {
+        await axios.post('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/users', data, {
             headers: { 'Content-Type': 'application/json' },
           }).then((response) =>{
               console.log(response)
@@ -88,10 +88,7 @@ class SignUpForm extends Component {
                     <label for="pass">Password</label>
                     <input ref= { this.refPasswordField } type="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="pass" placeholder="Password"/>
                 </div>
-                <div className="form-check">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-                    <label className="form-check-label" for="exampleCheck1">Check me out</label>
-                </div>
+                
                 <button onClick= {e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
             </form>
 
