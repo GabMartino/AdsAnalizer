@@ -7,6 +7,7 @@ class NavBar extends Component {
         showLogInButton: true,
         showSignUpButton: true,
         username: "",
+        AdminPanelButtonClicked: false
     }
 
     constructor(props){
@@ -17,6 +18,7 @@ class NavBar extends Component {
 		this.logInRef = React.createRef();
         this.signUpRef = React.createRef();
         this.logoutRef = React.createRef();
+        this.adminPanelRef = React.createRef();
 
     }
 
@@ -39,8 +41,12 @@ class NavBar extends Component {
         } );
 
         this.logoutRef.current.addEventListener( "click", () => {
-            this.props.logOut( true );
+            this.props.logOut();
             this.setState({username: ""});
+        } );
+        this.adminPanelRef.current.addEventListener( "click", () => {
+            this.props.switchInterface();
+            this.setState({ AdminPanelButtonClicked: !this.state.AdminPanelButtonClicked });
         } );
 
     }
@@ -55,6 +61,9 @@ class NavBar extends Component {
                         <p className="label">LOGGED AS</p>
                         <p>{this.state.username}</p>
                     </div>
+                    <button ref={ this.adminPanelRef } className={this.props.showAdminPanelButton ? "btn btn-primary m-2" : "btn btn-primary m-2 notDisplay"}  type="button"  aria-expanded="false" aria-controls="collapseExample">
+                        {!this.state.AdminPanelButtonClicked ? "Show Admin Panel" : "Show User Panel"}
+                    </button>
                     <button ref={ this.logInRef } className={this.props.showLogInButton ? "btn btn-primary m-2" : "btn btn-primary m-2 notDisplay"}  type="button"  aria-expanded="false" aria-controls="collapseExample">
                         Login
                     </button>

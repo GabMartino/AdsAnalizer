@@ -12,7 +12,6 @@ class LoginForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeOnEmail = this.handleChangeOnEmail.bind(this);
         this.handleChangeOnPassword = this.handleChangeOnPassword.bind(this);
-        this.sendData = this.sendData.bind(this);
     }
 
     state = {
@@ -34,37 +33,9 @@ class LoginForm extends Component {
             'email': this.state.email,
             'pass': this.state.password
         }
-        this.sendData(this, user);
+        this.props.doLogin(user);
         this.setState({email: "",
                         password: ""});
-    }
-
-    async sendData(obj, data){
-        await axios.put('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/login', data, {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true
-          }).then(function (response){
-                console.log(response);
-                if(response.status == 200 && response.data != "notFound"){
-                       // obj.setState({userLogged: response.data});
-                        const cookies = new Cookies(); 
-                        let name = cookies.get("name");
-                        let id = cookies.get("userId");
-                        let isAdmin = cookies.get("admin");
-                        let userData = {
-                            _id: id,
-                            name: name,
-                            isAdmin: isAdmin
-                        };
-                       
-                       obj.props.doLogIn(userData);
-                }else{
-                        alert("Username or Password wrong");
-                }
-            
-          }).catch(function (error) {
-                console.log(error);
-          });
     }
 
 
@@ -74,12 +45,12 @@ class LoginForm extends Component {
             <form>
                 <b>Login</b>
                 <div className="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
+                    <label htmlFor="exampleInputEmail1">Email address</label>
                     <input type="email" className="form-control" value= {this.state.email} onChange={this.handleChangeOnEmail} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>
                     <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group">
-                    <label for="exampleInputPassword1">Password</label>
+                    <label htmlFor="exampleInputPassword1">Password</label>
                     <input type="password" className="form-control" value= {this.state.password} onChange={this.handleChangeOnPassword}  id="exampleInputPassword1" placeholder="Password"/>
                 </div>
                 

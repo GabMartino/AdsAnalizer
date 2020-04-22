@@ -168,8 +168,10 @@ class SearchBar extends Component {
             selectedRegion: null,
             selectedProvince: null,
             showSubCategories: false,
-            showProvinces: false
+            showProvinces: false,
+            searchString: null,
         });
+        this.searchField.current.value = null;
     }
 
     render() {
@@ -178,7 +180,7 @@ class SearchBar extends Component {
             <React.Fragment>
                 <nav className="navbar nav_2 navbar-expand-lg navbar-light">
                         <form className="form-inline my-2 my-lg-0">
-                            <input ref={ this.searchField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Search" aria-label="Search"/>
+                            <input ref={ this.searchField } className="form-control mr-sm-2"  onChange={this.handleChange} type="search" placeholder="Search" aria-label="Search"/>
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory != null ? this.state.selectedCategory.name : "Categories"}>
                             {   (Array.isArray(this.state.categories) && this.state.categories.length) ? this.state.categories.map(
                                     category =>

@@ -70,22 +70,22 @@ class SignUpForm extends Component {
             <form>
                 <b>Signup</b>
                 <div className="form-group">
-                    <label for="username">Username</label>
+                    <label htmlFor="username">Username</label>
                     <input ref={ this.refUsernameField } type="text" value={this.state.username} onChange={this.handleChange} className="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter Username"/>
                     
                 </div>
                 <div className="form-group">
-                    <label for="email">Email address</label>
+                    <label htmlFor="email">Email address</label>
                     <input ref= { this.refEmailField } type="text" value={this.state.email} onChange={this.handleChange} className="form-control"   id="email" aria-describedby="emailHelp" placeholder="Enter Enter email"/>
                     <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group">
-                    <label for="phone">Phone Number</label>
+                    <label htmlFor="phone">Phone Number</label>
                     <input  ref= { this.refPhoneNumberField } type="text" value={this.state.phoneNumber} onChange={this.handleChange} className="form-control"  id="phone" aria-describedby="emailHelp" placeholder="Enter Phone Number"/>
                    
                 </div>
                 <div className="form-group">
-                    <label for="pass">Password</label>
+                    <label htmlFor="pass">Password</label>
                     <input ref= { this.refPasswordField } type="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="pass" placeholder="Password"/>
                 </div>
                 

@@ -25,14 +25,15 @@ class Feed extends Component {
                     id = {ad._id}
                     body={ad.body}
                     title={ad.subject}
-                    region= {ad.geo.region != null ? ad.geo.region.value : null}
-                    province= {ad.geo.province != null ? ad.geo.province.shortName : null}
-                    town= {ad.geo.town != null ? ad.geo.town.value : null }
+                    region= {ad.geo && ad.geo.region ? ad.geo.region.value : null}
+                    province= {ad.geo && ad.geo.province? ad.geo.province.shortName : null}
+                    town= {ad.geo && ad.geo.town? ad.geo.town.value : null }
                     price= {Array.isArray(ad.features) && ad.features.length ? ad.features[0].value : null}
-                    author={ad.advertiser.name}
+                    author={ad.advertiser}
+                    userLoggedId = {this.props.userLoggedId}
                     phoneNumber ={ad.advertiser.phone}
-                    reported= {ad.report ? ad.report : false}
-                    showDelete = {parseInt(ad.advertiser.userId) == parseInt(this.props.userLoggedId)}
+                    reported= {ad.report ? ad.report : 0}
+                    showDelete = {parseInt(ad.advertiser.userId) == parseInt(this.props.userLoggedId) || this.props.admin}
                     deleteAd = { this.props.deleteAd}
                     reportAd = { this.props.reportAd}
                 />)  : null

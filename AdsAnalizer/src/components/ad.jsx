@@ -58,15 +58,21 @@ class Ad extends Component {
                     <img src={ placeholder } alt="Generic placeholder image"/>
                 </div>
                 
-                <div className={ this.state.reported && this.state.admin ? "" : "notDisplay"}>{this.state.reported }</div>
+                
                 <div className="content">
                     <div className="info primary">
                         <div className="line">
                             <div className="title">
                                 { this.state.title }
                             </div>
-                            <button onClick={ () => this.props.deleteAd(this.state.id)} class={this.state.showDelete ? "btn btn-outline-success my-2 my-sm-0": "notDisplay"} type="submit">Delete</button>
-                            <button onClick={ () => this.props.reportAd(this.state.id)} class="btn btn-outline-success my-2 my-sm-0" type="submit">Report</button>
+                            <button onClick={ () => this.props.deleteAd(this.state.id)} className={this.state.showDelete ? "btn btn-outline-success my-2 my-sm-0": "notDisplay"} type="submit">Delete</button>
+                            <button onClick={ () => this.props.reportAd(this.state.id, true)} className={!this.props.admin && this.props.author.userId != this.props.userLoggedId? "btn btn-outline-success my-2 my-sm-0" : "notDisplay"} type="submit">Report</button>
+                            <button onClick={ () => this.props.reportAd(this.state.id, false)} 
+                                        className={this.props.admin ? (this.props.reported > 0 ? "btn btn-outline-success my-2 my-sm-0" : "btn btn-outline-success my-2 my-sm-0 disabled ") : "notDisplay"}
+                                        type="submit">Remove Report</button>
+                            <div>
+                                {this.state.admin && this.state.reported ? this.state.reported : null }
+                            </div>
                         </div>
                         <div className="line">
                             <div className="description">
@@ -84,14 +90,14 @@ class Ad extends Component {
                             </div>
                             <div className="author">
                                 <img src={ user } />
-                                {this.state.author}
+                                {this.state.author.name}
                             </div>
                         </div>
                         <div className="line">
                             <div className="price">
                                 {this.state.price}
                             </div>
-                            <button onClick={() =>this.showPhoneNumber()} class="btn btn-outline-success my-2 my-sm-0" type="submit" >{this.state.textButton}</button>
+                            <button onClick={() =>this.showPhoneNumber()} className="btn btn-outline-success my-2 my-sm-0" type="submit" >{this.state.textButton}</button>
                         </div>
                     </div>
                 </div>

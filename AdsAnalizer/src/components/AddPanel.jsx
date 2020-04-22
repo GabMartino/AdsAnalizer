@@ -27,6 +27,7 @@ class AddPanel extends Component {
         selectedSubCategory: null,
         selectedRegion: null,
         selectedProvince: null,
+        setTown: null,
         regions: [],
         categories: [],
         subcategories: [],
@@ -106,6 +107,9 @@ class AddPanel extends Component {
             case this.adPrice.current:
                 this.setState({price: event.target.value});
                 break;
+            case this.town.current:
+                this.setState({setTown: event.target.value});
+                break;
         }
     }
     handleSubmit(){
@@ -119,10 +123,15 @@ class AddPanel extends Component {
                 date: actualDateTime,
                 features: [{ name: "Prezzo", value: parseFloat(this.state.price)}],
                 category:  this.state.selectedCategory,
-                advertiser: { name: this.state.actualUser.name,
-                                phone: this.state.actualUser.phone,
-                                userId: this.state.actualUser._id },
-                geo: { region: this.state.selectedRegion, province: this.state.selectedProvince}
+                advertiser: {
+                    name: this.state.actualUser.name,
+                    phone: this.state.actualUser.phone,
+                    userId: this.state.actualUser._id
+
+                },
+                geo: { region: this.state.selectedRegion, 
+                        province: this.state.selectedProvince,
+                        town: this.state.town}
 
             }
             this.sendData(this, newAd);
@@ -136,6 +145,7 @@ class AddPanel extends Component {
     async sendData(obj, data){
         await axios.post('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/ads', data, {
             headers: { 'Content-Type': 'application/json' },
+            withCredentials: true
             }).then(function (response){
                 console.log(response);
                 if(response.status == 200 && response.data != "notFound"){
@@ -156,7 +166,7 @@ class AddPanel extends Component {
             <form>
                 <b>Add Panel</b>
                 <div className="form-group">
-                    <label for="exampleInputEmail1">Name</label>
+                    <label htmlFor="exampleInputEmail1">Name</label>
                     <input ref={ this.adTitle } type="text" onChange={this.handleChange} className="form-control"  aria-describedby="emailHelp" placeholder="Title"/>
                 </div>
                 <div className="form-group">
