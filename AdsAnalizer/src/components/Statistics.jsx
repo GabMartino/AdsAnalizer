@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton, Tabs, Tab } from 'react-bootstrap';
 import Chart from 'react-apexcharts'
 class Statistics extends Component {
 
@@ -10,6 +10,8 @@ class Statistics extends Component {
         super(props);
         
         this.fetchData = this.fetchData.bind(this);
+        this.setRegion = this.setRegion.bind(this);
+        this.setCategory = this.setCategory.bind(this);
     }
 
     state = {
@@ -35,6 +37,18 @@ class Statistics extends Component {
     }
     componentDidMount(){
         this.fetchData();
+    }
+    setCategory(event){
+        const selectedCategory = Array.isArray(this.state.categories) && this.state.categories.find(category => category._id === event.target.id);
+        this.setState({ selectedCategory: selectedCategory});
+        //console.log(window.location.hostname);
+     
+    }
+    setRegion(event){
+        event.preventDefault();
+        const selectedRegion = Array.isArray(this.state.regions) && this.state.regions.find(region => region._id === event.target.id);
+        this.setState({selectedRegion: selectedRegion });
+      
     }
     async fetchData(){
         axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/0'
@@ -63,15 +77,15 @@ class Statistics extends Component {
         };
         if(this.state.selectedCategory != null){
             
-            this.sendData(searchFields);
+            this.requireData(searchFields);
         }
         
         
        
     }
 
-    async sendData(searchFields){
-        await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/ads', searchFields).then(
+    async requireData(restParam, searchFields){
+        await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/stats/'+restParam, searchFields).then(
             (response) => {
                     this.setState({searchResult: response.data});
                     console.log(response.data);
@@ -101,8 +115,27 @@ class Statistics extends Component {
                     }
                 </DropdownButton>
                 <button className="btn btn-outline-success my-2 my-sm-0" onClick={e => {e.preventDefault();this.handleSearch()}} type="submit">Search</button>
-                <div className={ "plot"}>
-                    <Chart options={this.state.options} series={this.state.series} type="bar" width={500} height={320} />
+                <div className={ "plot1"}>
+                    <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
+                        <Tab eventKey="home" title="Number Of Ads">
+                            <Chart options={this.state.options} series={this.state.series} type="bar" width={500} height={320} />
+                        </Tab>
+                        <Tab eventKey="profile" title="Mean Price">
+                            <Chart options={this.state.options} series={this.state.series} type="bar" width={500} height={320} />
+                        </Tab>
+                    </Tabs>
+                   
+                </div>
+                <div className={ "plot2"}>
+                    <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
+                        <Tab eventKey="home" title="Number Of Ads">
+                            <Chart options={this.state.options} series={this.state.series} type="bar" width={500} height={320} />
+                        </Tab>
+                        <Tab eventKey="profile" title="Mean Price">
+                            <Chart options={this.state.options} series={this.state.series} type="bar" width={500} height={320} />
+                        </Tab>
+                    </Tabs>
+                   
                 </div>
             </div>
 
