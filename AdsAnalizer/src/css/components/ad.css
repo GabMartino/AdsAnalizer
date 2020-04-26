@@ -140,9 +140,12 @@
     max-height: 1.5em;
 	font-family: Cereal_Bold;
 	font-size: 1.2em;
-	color: #c97b63;
+	color: #fd5523;
 	overflow: hidden;
 
+}
+.admin_mode .ad_tile .content .info.secondary .price{
+	color: #c97b63;
 }
 
 .ad_tile .content .info.secondary button{
