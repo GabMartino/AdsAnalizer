@@ -18,10 +18,10 @@ import consts from './consts';
 class App extends Component {
 
 
-    webServerPort = 8080;
-    webServerIP = window.location.hostname;
+    webServerPort = 815;
+    webServerIP = '80.112.184.23';
     state = {
-        adminInterface: false,
+        adminInterface: true,
         userLogged: {},
         showLogIn: false,
         showSignUp: false,
@@ -50,7 +50,7 @@ class App extends Component {
         this.logoutRequest = this.logoutRequest.bind(this);
         this.doLogin = this.doLogin.bind(this);
     }
-    
+
     componentDidMount(){
         this.initListeners();
         //Fetch first ads
@@ -104,7 +104,7 @@ class App extends Component {
                     this.fetchAds(this,searchParams);
                     this.setState({ page: this.state.page + 1});
                 }*/
-               
+
             }, true);
 
     }
@@ -147,7 +147,7 @@ class App extends Component {
         }
 
         this.fetchAds(this, searchParams);
-        
+
 
     }
     async fetchAds(obj,params){
@@ -163,19 +163,19 @@ class App extends Component {
                     }else{
                         obj.setState({ searchResult: response.data});
                     }
-                        
-                            
+
+
                     console.log("oook");
                 }else{
                     alert("Something's gone wrong");
                 }
-            
+
           }).catch(function (error) {
                 console.error(error);
           });
     }
 
-    
+
 
     showStatistics( show ){
 
@@ -212,7 +212,7 @@ class App extends Component {
     doSignUp(  ){
         this.showSignUp( false );
         //console.log( "made it to sign up!" )
-    }    
+    }
 
     async doLogin(data){
         if(data != null){// login
@@ -220,7 +220,7 @@ class App extends Component {
             this.showLogIn( false );
             return;
         }
-        const cookies = new Cookies(); 
+        const cookies = new Cookies();
         var name = cookies.get("name");
         var id = cookies.get("userId");
         var isAdmin = cookies.get("admin");
@@ -238,7 +238,7 @@ class App extends Component {
                 userLogged: userData
             });
 
-            
+
     }
     async loginRequest(obj, data){
         let response = null;
@@ -249,7 +249,7 @@ class App extends Component {
                 //console.log(response);
                 if(response.status == 200 && response.data != "notFound"){
                        // obj.setState({userLogged: response.data});
-                        const cookies = new Cookies(); 
+                        const cookies = new Cookies();
                         var name = cookies.get("name");
                         var id = cookies.get("userId");
                         var isAdmin = cookies.get("admin");
@@ -269,12 +269,12 @@ class App extends Component {
                 }else{
                         alert("Username or Password wrong");
                 }
-            
+
           }).catch(function (error) {
                 console.log(error);
           });
           return response;
-        
+
 
     }
 
@@ -283,11 +283,11 @@ class App extends Component {
             {
                 adminInterface: false,
                 userIsLogged: false,
-                userLogged: {}  
+                userLogged: {}
             }
         );
         this.fetchAds(this, null);
-       
+
         await axios.put('http://'+this.webServerIP+':'+this.webServerPort+'/logout',null, {
             withCredentials: true
         }).then(function (response){
@@ -303,19 +303,19 @@ class App extends Component {
                 }else{
                     alert("Something's gone wrong");
                 }
-            
+
           }).catch(function (error) {
                 console.log(error);
           });
         //this.doLogin();
-        
+
     }
     async deleteAd(adId){
         const ad = this.state.searchResult.find( ad => ad._id == adId);
         console.log(adId)
         console.log(ad)
         if(ad && (ad.advertiser.userId == this.state.userLogged._id || this.state.userLogged.isAdmin)){
-            
+
             await axios.delete('http://'+this.webServerIP+':'+this.webServerPort+'/ads/'+adId,{
                 withCredentials: true
             }).then(function (response){
@@ -325,10 +325,10 @@ class App extends Component {
                 }else{
                         alert("Something's gone wrong");
                 }
-            
+
           }).catch(function (error) {
               console.error(error);
-           
+
             });
         }
         let searchParams = {
@@ -358,7 +358,7 @@ class App extends Component {
         this.fetchAds(this, searchParams);
     }
     async reportAd(adId, value){
-        
+
         const ad = this.state.searchResult.find( ad => ad._id == adId);
         console.log(ad)
         if(ad){
@@ -369,7 +369,7 @@ class App extends Component {
             await axios.put('http://'+this.webServerIP+':'+this.webServerPort+'/ads/'+adId, params, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
-                
+
             }).then(function (response){
                 console.log(response);
                 if(response.status == 200){
@@ -377,7 +377,7 @@ class App extends Component {
                 }else{
                         alert("Something's gone wrong");
                 }
-            
+
           }).catch(function (error) {
                 console.error(error);
           });
@@ -395,7 +395,7 @@ class App extends Component {
     render() {
 
         return (
-            <div className={ "app" }>
+            <div className={ this.state.adminInterface ? "app admin_mode" : "app" }>
                 <NavBar
                         username= {this.state.userLogged.name}
                         showLogIn={ this.showLogIn.bind(this) }
@@ -414,11 +414,11 @@ class App extends Component {
                     webServerPort={ this.webServerPort }
                     reportResult = { this.fetchSearchResult.bind(this)}
                 />
-                <Dashboard 
+                <Dashboard
                         //isAdminPanel = {this.state.userLogged.isAdmin}
                         isAdmin = {this.state.adminInterface}
-                        userIsLogged={ this.state.userIsLogged } 
-                        applyFilter={ this.applyFilter.bind(this) } 
+                        userIsLogged={ this.state.userIsLogged }
+                        applyFilter={ this.applyFilter.bind(this) }
                         showStatistics={ this.showStatistics.bind(this) }
                         webServerIP = {this.webServerIP}
                         webServerPort = {this.webServerPort}
@@ -441,12 +441,12 @@ class App extends Component {
                     reportAd = {this.reportAd.bind(this)}
                 ></Feed>
                 <div ref={ this.closeLogInRef } className={ this.state.showLogIn ? "form_wrapper show_form" : "form_wrapper" }>
-                  <LoginForm  
+                  <LoginForm
                             doLogin={ this.doLogin.bind(this)}
                             webServerPort={ this.webServerPort }
                             webServerIP = {this.webServerIP}
                         >
-                                
+
                     </LoginForm>
                 </div>
                 <div ref={ this.closeSignUpRef } className={ this.state.showSignUp ? "form_wrapper show_form" : "form_wrapper" }>
@@ -456,7 +456,7 @@ class App extends Component {
                     ></SignUpForm>
                 </div>
                 <div ref={ this.closeAddRef } className={ this.state.showAdd  ? "form_wrapper show_form" : "form_wrapper" }>
-                    <AddPanel   
+                    <AddPanel
 
                         actualUser= {this.state.userLogged}
                         webServerPort={this.webServerPort}
@@ -472,7 +472,7 @@ class App extends Component {
 
     }
 
-    
+
 
 }
 

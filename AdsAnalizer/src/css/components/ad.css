@@ -140,11 +140,37 @@
     max-height: 1.5em;
 	font-family: Cereal_Bold;
 	font-size: 1.2em;
-	color: #fd5523;
+	color: #c97b63;
 	overflow: hidden;
 
 }
 
 .ad_tile .content .info.secondary button{
 	font-family: Cereal_Bold;
+}
+
+.ad_tile .buttons{
+
+
+
+}
+
+.ad_tile .report{
+
+	font-family: Cereal_Book;
+	font-size: 0.8em;
+	color: rgba( 0, 0, 0, 0.6 );
+	background: none;
+	border: none;
+
+}
+
+.ad_tile .delete{
+
+	font-family: Cereal_Book;
+	font-size: 0.8em;
+	color: #D50000;
+	background: none;
+	border: none;
+
 }

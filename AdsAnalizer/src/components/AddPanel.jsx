@@ -56,7 +56,7 @@ class AddPanel extends Component {
                 }
         );
     }
-    
+
     async setCategory(event){
         const selectedCategory = Array.isArray(this.state.categories) && this.state.categories.find(category => category._id === event.target.id);
         this.setState({ selectedCategory: selectedCategory});
@@ -64,7 +64,7 @@ class AddPanel extends Component {
         await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/'+selectedCategory._id).then(
             (response) => {
                 this.setState({subcategories: response.data});
-                
+
                 }
         );
         this.setState({ showSubCategories: true });
@@ -80,7 +80,7 @@ class AddPanel extends Component {
 
     }
 
-   
+
     async setRegion(event){
         event.preventDefault();
         const selectedRegion = Array.isArray(this.state.regions) && this.state.regions.find(region => region._id === event.target.id);
@@ -90,7 +90,7 @@ class AddPanel extends Component {
         await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/geos/'+selectedRegion._id).then(
             (response) => {
                 this.setState({provinces: response.data});
-                
+
                 }
         );
         this.setState({ showProvinces: true });
@@ -129,7 +129,7 @@ class AddPanel extends Component {
                     userId: this.state.actualUser._id
 
                 },
-                geo: { region: this.state.selectedRegion, 
+                geo: { region: this.state.selectedRegion,
                         province: this.state.selectedProvince,
                         town: this.state.town}
 
@@ -139,7 +139,7 @@ class AddPanel extends Component {
         }else{
             alert("Fill all fields.");
         }
-        
+
 
     }
     async sendData(obj, data){
@@ -155,7 +155,7 @@ class AddPanel extends Component {
                 }else{
                         alert("Something gone wrong");
                 }
-            
+
           }).catch(function (error) {
                 console.log(error);
           });
@@ -163,53 +163,57 @@ class AddPanel extends Component {
     render() {
 
         return (
-            <form>
-                <b>Add Panel</b>
-                <div className="form-group">
-                    <label htmlFor="exampleInputEmail1">Name</label>
-                    <input ref={ this.adTitle } type="text" onChange={this.handleChange} className="form-control"  aria-describedby="emailHelp" placeholder="Title"/>
+            <form class="add_panel">
+                <div className="title">Add Panel</div>
+                <div className="content">
+                    <div className="form-group">
+                        <label htmlFor="exampleInputEmail1">Name</label>
+                        <input ref={ this.adTitle } type="text" onChange={this.handleChange} className="form-control"  aria-describedby="emailHelp" placeholder="Title"/>
+                    </div>
+                    <div className="form-group">
+                        <label >Description</label>
+                        <input ref={ this.adDescription } type="text" onChange={this.handleChange} className="form-control"  placeholder="Description"/>
+                    </div>
+                    <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory ? this.state.selectedCategory.name : "Categories"}>
+                        {   (Array.isArray(this.state.categories) && this.state.categories.length) ? this.state.categories.map(
+                                category =>
+                                <Dropdown.Item onClick={ this.setCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
+                                ) : null
+                            }
+                    </DropdownButton>
+                    <DropdownButton id="dropdown-basic-button" className={this.state.showSubCategories ? "m-2" : "notDisplay" } title={this.state.selectedSubCategory ? this.state.selectedSubCategory.name : "Subcategories"}>
+                        {   (Array.isArray(this.state.subcategories) && this.state.subcategories.length) ? this.state.subcategories.map(
+                                category =>
+                                <Dropdown.Item onClick={ this.setSubCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
+                                ) : null
+                            }
+                    </DropdownButton>
+                    <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedRegion ? this.state.selectedRegion.name : "Regions"}>
+                        {   (Array.isArray(this.state.regions) && this.state.regions.length) ? this.state.regions.map(
+                                region =>
+                                <Dropdown.Item onClick={ e => this.setRegion(e) } id={region._id} name={region.name}>{region.name}</Dropdown.Item>
+                                ) : null
+                            }
+                    </DropdownButton>
+                    <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces ? "m-2" : "notDisplay" } title={this.state.selectedProvince ? this.state.selectedProvince.name : "Provinces"} >
+                        {   (Array.isArray(this.state.provinces) && this.state.provinces.length) ? this.state.provinces.map(
+                                province =>
+                                <Dropdown.Item onClick={ this.setProvince } id={province._id} name={province.name}>{province.name} </Dropdown.Item>
+                                ) : null
+                            }
+                    </DropdownButton>
+                    <div className={this.state.selectedProvince ? "form-group m-2" : "notDisplay" }>
+                        <label >Town</label>
+                        <input ref={ this.town } type="text" onChange={this.handleChange} className="form-control"  placeholder="Town"/>
+                    </div>
+                    <div className="form-group">
+                        <label >Price</label>
+                        <input ref={ this.adPrice } type="text" onChange={this.handleChange} className="form-control"  placeholder="Price"/>
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label >Description</label>
-                    <input ref={ this.adDescription } type="text" onChange={this.handleChange} className="form-control"  placeholder="Description"/>
+                <div className="interactions">
+                    <button type="submit" onClick={e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
                 </div>
-                <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory ? this.state.selectedCategory.name : "Categories"}>
-                    {   (Array.isArray(this.state.categories) && this.state.categories.length) ? this.state.categories.map(
-                            category =>
-                            <Dropdown.Item onClick={ this.setCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
-                            ) : null
-                        }
-                </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" className={this.state.showSubCategories ? "m-2" : "notDisplay" } title={this.state.selectedSubCategory ? this.state.selectedSubCategory.name : "Subcategories"}>
-                    {   (Array.isArray(this.state.subcategories) && this.state.subcategories.length) ? this.state.subcategories.map(
-                            category =>
-                            <Dropdown.Item onClick={ this.setSubCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
-                            ) : null
-                        }
-                </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedRegion ? this.state.selectedRegion.name : "Regions"}>
-                    {   (Array.isArray(this.state.regions) && this.state.regions.length) ? this.state.regions.map(
-                            region =>
-                            <Dropdown.Item onClick={ e => this.setRegion(e) } id={region._id} name={region.name}>{region.name}</Dropdown.Item>
-                            ) : null
-                        }
-                </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces ? "m-2" : "notDisplay" } title={this.state.selectedProvince ? this.state.selectedProvince.name : "Provinces"} >
-                    {   (Array.isArray(this.state.provinces) && this.state.provinces.length) ? this.state.provinces.map(
-                            province =>
-                            <Dropdown.Item onClick={ this.setProvince } id={province._id} name={province.name}>{province.name} </Dropdown.Item>
-                            ) : null
-                        }
-                </DropdownButton>
-                <div className={this.state.selectedProvince ? "form-group m-2" : "notDisplay" }>
-                    <label >Town</label>
-                    <input ref={ this.town } type="text" onChange={this.handleChange} className="form-control"  placeholder="Town"/>
-                </div>
-                <div className="form-group">
-                    <label >Price</label>
-                    <input ref={ this.adPrice } type="text" onChange={this.handleChange} className="form-control"  placeholder="Price"/>
-                </div>
-                <button type="submit" onClick={e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
             </form>
 
 

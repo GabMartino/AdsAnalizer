@@ -5,6 +5,8 @@
 
 /* COMPONENTS */
 @import "./components/LogInForm.css";
+@import "./components/SignUpForm.css";
+@import "./components/AddPanelForm.css";
 @import "./components/ad.css";
 @import "./components/navbar.css";
 @import "./components/dashboard.css";

@@ -1,0 +1,12 @@
+.form_wrapper form.add_panel{
+
+	min-height: 550px;
+    min-width: 550px;
+
+}
+
+.form_wrapper form.signup .content{
+
+	height: auto;
+
+}

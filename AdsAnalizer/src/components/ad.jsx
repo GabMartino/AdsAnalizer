@@ -41,7 +41,7 @@ class Ad extends Component {
                         reported: props.reported});
         //this.setState(this.state);
     }
-    
+
     showPhoneNumber(){
         if(this.state.textButton != "Buy now"){
             this.setState({textButton: "Buy now"})
@@ -57,31 +57,33 @@ class Ad extends Component {
                 <div className="img">
                     <img src={ placeholder } alt="Generic placeholder image"/>
                 </div>
-                
-                
+
+
                 <div className="content">
                     <div className="info primary">
                         <div className="line">
                             <div className="title">
                                 { this.state.title }
                             </div>
-                            <button onClick={ () => this.props.deleteAd(this.state.id)} className={this.state.showDelete ? "btn btn-outline-success my-2 my-sm-0": "notDisplay"} type="submit">Delete</button>
-                            <button onClick={ () => this.props.reportAd(this.state.id, true)} className={!this.props.admin && this.props.author.userId != this.props.userLoggedId? "btn btn-outline-success my-2 my-sm-0" : "notDisplay"} type="submit">Report</button>
-                            <button onClick={ () => this.props.reportAd(this.state.id, false)} 
-                                        className={this.props.admin ? (this.props.reported > 0 ? "btn btn-outline-success my-2 my-sm-0" : "btn btn-outline-success my-2 my-sm-0 disabled ") : "notDisplay"}
-                                        type="submit">Remove Report</button>
-                            <div>
-                                {this.state.admin && this.state.reported ? this.state.reported : null }
+                            <div className="buttons">
+                                <button onClick={ () => this.props.deleteAd(this.state.id)} className={this.state.showDelete ? "delete": "notDisplay"} type="submit">Delete</button>
+                                <button onClick={ () => this.props.reportAd(this.state.id, true)} className={!this.props.admin && this.props.author.userId != this.props.userLoggedId? "report" : "notDisplay"} type="submit">Report</button>
+                                <button onClick={ () => this.props.reportAd(this.state.id, false)}
+                                            className={this.props.admin ? (this.props.reported > 0 ? "report" : "report disabled ") : "notDisplay"}
+                                            type="submit">Remove Report</button>
+                                <div>
+                                    {this.state.admin && this.state.reported ? this.state.reported : null }
+                                </div>
                             </div>
                         </div>
                         <div className="line">
                             <div className="description">
                                 { this.state.body }
                             </div>
-                            
+
                         </div>
                     </div>
-                    
+
                     <div className="info secondary">
                         <div className="line">
                             <div className="location">

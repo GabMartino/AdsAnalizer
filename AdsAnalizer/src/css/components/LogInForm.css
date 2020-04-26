@@ -1,8 +1,63 @@
 .form_wrapper form{
 
-	padding: 20px;
-	background: #ffffff;
-	border-radius: 5px;
-	z-index: 100;
+	min-height: 400px;
+    min-width: 400px;
+    position: relative;
+    background: #ffffff;
+    border-radius: 10px;
+    z-index: 100;
+
+}
+
+
+.form_wrapper form .title{
+
+	height: 100px;
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 30px;
+	background: #356859;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	font-family: Cereal_Bold;
+	font-size: 1.2em;
+	color: #ffffff;
+
+}
+
+.form_wrapper form .content{
+
+	height: 230px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 30px;
+    font-family: Cereal_Book;
+    font-size: 1em;
+
+}
+
+.form_wrapper form .interactions{
+
+	height: auto;
+    width: 100%;
+    position: absolute;
+	bottom: 0;
+	right: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px;
+	font-family: Cereal_Bold;
+
+}
+
+.form_wrapper form .interactions button{
+
+	padding: 10px 30px;
 
 }
