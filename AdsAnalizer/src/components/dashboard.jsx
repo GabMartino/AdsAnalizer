@@ -17,7 +17,6 @@ class Dashboard extends Component {
 		//refs
 		this.toggleMyAddsRef = React.createRef();
         this.toggleFlaggedRef = React.createRef();
-        this.toggleUsersRef = React.createRef();
 		this.toggleStatisticsRef = React.createRef();
         this.fetchCounters = this.fetchCounters.bind(this);
     }
@@ -74,27 +73,11 @@ class Dashboard extends Component {
 
             if(!this.toggleFlaggedRef.current.classList.contains("checked")){
                 this.toggleFlaggedRef.current.classList.add("checked");
-                this.toggleUsersRef.current.classList.remove("checked");
                 this.toggleFlaggedRef.current.checked = true;
                 this.props.applyFilter( consts.FILTER_FLAGGED );
             }else{
                 this.toggleFlaggedRef.current.classList.remove("checked");
                 this.toggleFlaggedRef.current.checked = false;
-                this.props.applyFilter( null );
-            }
-
-		} );
-
-        this.toggleUsersRef.current.addEventListener( "click", () => {
-
-            if(!this.toggleUsersRef.current.classList.contains("checked")){
-                this.toggleUsersRef.current.classList.add("checked");
-                this.toggleFlaggedRef.current.classList.remove("checked");
-                this.toggleUsersRef.current.checked = true;
-                this.props.applyFilter( consts.FILTER_USERS );
-            }else{
-                this.toggleUsersRef.current.classList.remove("checked");
-                this.toggleUsersRef.current.checked = false;
                 this.props.applyFilter( null );
             }
 
@@ -120,12 +103,6 @@ class Dashboard extends Component {
 
 					<input ref={ this.toggleFlaggedRef } type="radio" name="filters" id="switchFlagged" className="switch" />
 					<label htmlFor="switchFlagged"></label>
-				</div>
-                <div className={this.props.isAdmin ? "switch_wrapper" : "notDisplay"}>
-					<p>Mostra utenti</p>
-
-					<input ref={ this.toggleUsersRef } type="radio" name="filters" id="switchUsers" className="switch" />
-					<label htmlFor="switchUsers"></label>
 				</div>
 				<button ref={ this.toggleStatisticsRef } className="btn btn-primary statistics" type="button" aria-expanded="false" aria-controls="collapseExample">Statistiche</button>
                 <div className={this.props.isAdmin ? "switch_wrapper" : "notDisplay"}>

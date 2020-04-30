@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import Ad from './ad';
+import User from './user'
 import axios from 'axios';
+import consts from '../consts';
 
 class Feed extends Component {
     state = {
-        ads: this.props.adsList
+        data: this.props.data
     }
     constructor(props){
         super(props);
     }
     componentWillReceiveProps(props){
-        if(props.adsList != null){
-            this.setState({ ads: props.adsList});
+        if(props.data != null){
+            this.setState({ data: props.data});
           
         }
         
@@ -20,23 +22,43 @@ class Feed extends Component {
         return (
             <div id="feed">
                 
-                { Array.isArray(this.state.ads) && this.state.ads.length ? this.state.ads.map( ad => <Ad
-                    admin = {this.props.admin}
-                    id = {ad._id}
-                    body={ad.body}
-                    title={ad.subject}
-                    region= {ad.geo && ad.geo.region ? ad.geo.region.value : null}
-                    province= {ad.geo && ad.geo.province? ad.geo.province.shortName : null}
-                    town= {ad.geo && ad.geo.town? ad.geo.town.value : null }
-                    price= {Array.isArray(ad.features) && ad.features.length ? ad.features[0].value : null}
-                    author={ad.advertiser}
-                    userLoggedId = {this.props.userLoggedId}
-                    phoneNumber ={ad.advertiser.phone}
-                    reported= {ad.report ? ad.report : 0}
-                    showDelete = {parseInt(ad.advertiser.userId) == parseInt(this.props.userLoggedId) || this.props.admin}
-                    deleteAd = { this.props.deleteAd}
-                    reportAd = { this.props.reportAd}
-                />)  : null
+                { Array.isArray(this.state.data) && this.state.data.length ? this.state.data.map( item => {
+                console.log(this.props.kindOfResult == consts.ADS )
+                if( this.props.kindOfResult == consts.ADS ){
+                        return <Ad
+                            admin = {this.props.admin}
+                            id = {item._id}
+                            body={item.body}
+                            title={item.subject}
+                            region= {item.geo && item.geo.region ? item.geo.region.value : null}
+                            province= {item.geo && item.geo.province? item.geo.province.shortName : null}
+                            town= {item.geo && item.geo.town? item.geo.town.value : null }
+                            price= {Array.isArray(item.features) && item.features.length ? item.features[0].value : null}
+                            author={item.advertiser ? item.advertiser : null }
+                            userLoggedId = {this.props.userLoggedId}
+                            phoneNumber ={item.advertiser ? item.advertiser.phone : null}
+                            reported= {item.report ? item.report : 0}
+                            showDelete = {item.advertiser && parseInt(item.advertiser.userId) == parseInt(this.props.userLoggedId) || this.props.admin}
+                            deleteAd = { this.props.deleteAd}
+                            reportAd = { this.props.reportAd}
+                        />
+                }else{
+                    return <User
+                    
+                    
+                    
+                    />
+
+
+                }
+                    
+                    
+                    
+                    
+                    }
+                
+                
+                )  : null
             }
 
             </div>

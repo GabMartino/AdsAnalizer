@@ -2,7 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 var accepts = require('mongodb-language-model').accepts;
 //////////////////////// MAIN FUNCTION FOR DB CALLS
 const url = 'mongodb://localhost:27017';
-//const url = 'mongodb://80.112.184.23:810/';
+//const url = 'mongodb://80.112.140.254:810/';
 const dbname = "maga";
 
 

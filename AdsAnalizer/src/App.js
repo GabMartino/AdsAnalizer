@@ -11,6 +11,7 @@ import SignUpForm from './components/signUpForm';
 import AddPanel from './components/AddPanel';
 import Dashboard from './components/dashboard';
 import Statistics from './components/Statistics';
+import SearchUsersBar from './components/searchUsersBar';
 import consts from './consts';
 
 
@@ -18,10 +19,10 @@ import consts from './consts';
 class App extends Component {
 
 
-    webServerPort = 815;
-    webServerIP = '80.112.184.23';
+    webServerPort = 8080;
+    webServerIP = window.location.hostname;
     state = {
-        adminInterface: true,
+        adminInterface: false,
         userLogged: {},
         showLogIn: false,
         showSignUp: false,
@@ -29,8 +30,10 @@ class App extends Component {
         showStatistics: false,
         userIsLogged: false,
         searchResult: null,
+        LastKindOfResult: consts.ADS,
         filter: null,
-        page: 0,
+        lastSearchParams: null,
+
     }
 
     constructor(props){
@@ -43,7 +46,7 @@ class App extends Component {
         this.closeAddRef = React.createRef();
         this.closeStatistics = React.createRef();
         this.addRef = React.createRef();
-        this.fetchAds = this.fetchAds.bind(this);
+        this.fetchData = this.fetchData.bind(this);
         this.deleteAd = this.deleteAd.bind(this);
         this.showLogIn = this.showLogIn.bind(this);
         this.loginRequest = this.loginRequest.bind(this);
@@ -54,7 +57,7 @@ class App extends Component {
     componentDidMount(){
         this.initListeners();
         //Fetch first ads
-        this.fetchAds(this, {params: {pag: 0 }});
+        this.fetchData(consts.ADS, {params: {pag: 0 }});
 
         this.doLogin(null);
     }
@@ -94,16 +97,18 @@ class App extends Component {
                 const html = document.documentElement;
                 const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
                 const windowBottom = windowHeight + window.pageYOffset;
+                //console.log(windowBottom)
+                //console.log(docHeight)
                 //HAS TO BE IMPLEMENTED
-                /*if (windowBottom <= docHeight) {
-                    let searchParams = {
-                        params: {
-                            pag: this.state.page + 1
-                        }
-                    };
-                    this.fetchAds(this,searchParams);
-                    this.setState({ page: this.state.page + 1});
-                }*/
+                if (Math.round(windowBottom - 1 )>=  docHeight ) {
+                  
+                    let searchParams = this.state.lastSearchParams;
+                    searchParams.params.pag += 1;
+
+                    this.fetchData(this.state.LastKindOfResult, searchParams);
+                    this.setState({ lastSearchParams: searchParams});
+                    
+                }
 
             }, true);
 
@@ -124,9 +129,6 @@ class App extends Component {
             } );
 
         }
-
-        //console.log( "Filter applied: " );
-        //console.log( this.state.filter );
         let searchParams = {
             params: {
                 pag: 0
@@ -146,26 +148,33 @@ class App extends Component {
             }
         }
 
-        this.fetchAds(this, searchParams);
+        this.fetchData(consts.ADS, searchParams);
 
 
     }
-    async fetchAds(obj,params){
-        await axios.get('http://'+this.webServerIP+':'+this.webServerPort+'/ads',params,{
+    async fetchData(kindOfData, params){
+        let restAddress = "";
+        if(kindOfData == consts.ADS){
+            restAddress = '/ads';
+        }else if( kindOfData == consts.USERS){
+            restAddress = '/stats/users';
+        }
+        this.setState({lastSearchParams: params});
+        
+        await axios.get('http://'+this.webServerIP+':'+this.webServerPort+restAddress,params,{
             withCredentials: true,
-        }).then(function (response){
-                //console.log(response);
+        }).then((response) =>{
                 if(response.status == 200){
-                    if(params && params.page && params.page != 0 && obj.state.searchResult != null){
-                        var list = obj.state.searchResult;
-                        list.push(response.data);
-                        obj.setState({ searchResult: list});
+                    if(params && params.params.pag && params.params.pag > 0 && kindOfData == this.state.LastKindOfResult){
+                        
+                        this.setState({ searchResult: this.state.searchResult.concat(response.data)});
+                        console.log(this.state.searchResult);
                     }else{
-                        obj.setState({ searchResult: response.data});
+                        this.setState({ searchResult: response.data,
+                                        LastKindOfResult: kindOfData});
                     }
-
-
-                    console.log("oook");
+                   
+                   
                 }else{
                     alert("Something's gone wrong");
                 }
@@ -173,6 +182,8 @@ class App extends Component {
           }).catch(function (error) {
                 console.error(error);
           });
+         
+        
     }
 
 
@@ -286,7 +297,7 @@ class App extends Component {
                 userLogged: {}
             }
         );
-        this.fetchAds(this, null);
+        this.fetchData(consts.ADS, null);
 
         await axios.put('http://'+this.webServerIP+':'+this.webServerPort+'/logout',null, {
             withCredentials: true
@@ -294,18 +305,20 @@ class App extends Component {
                 //console.log(response);
                 if(response.status == 200){
                     console.log("Logout Succeded.");
-                    const cookie = new Cookies();
-                    cookie.remove("sessionId");
-                    cookie.remove("userId");
-                    cookie.remove("name");
-                    cookie.remove("admin");
-                    cookie.remove("phone");
+                   
                 }else{
                     alert("Something's gone wrong");
                 }
 
           }).catch(function (error) {
                 console.log(error);
+          }).finally(() =>{
+            const cookie = new Cookies();
+            cookie.remove("sessionId");
+            cookie.remove("userId");
+            cookie.remove("name");
+            cookie.remove("admin");
+            cookie.remove("phone");
           });
         //this.doLogin();
 
@@ -355,7 +368,7 @@ class App extends Component {
                 }
             }
         }
-        this.fetchAds(this, searchParams);
+        this.fetchData(consts.ADS, searchParams);
     }
     async reportAd(adId, value){
 
@@ -382,13 +395,9 @@ class App extends Component {
                 console.error(error);
           });
         }
-        this.fetchAds(this, null);
+        this.fetchData(consts.ADS, null);
     }
 
-    fetchSearchResult(result){
-        console.log(result);
-        this.setState({searchResult: result});
-    }
     switchInterface(){
         this.setState({ adminInterface: !this.state.adminInterface});
     }
@@ -412,8 +421,19 @@ class App extends Component {
                 <SearchBar
                     webServerIP = {this.webServerIP}
                     webServerPort={ this.webServerPort }
-                    reportResult = { this.fetchSearchResult.bind(this)}
+                    fetchData = {this.fetchData }
+                  
                 />
+                <div className={ this.state.userIsLogged && this.state.adminInterface ? "" : "notDisplay" }>
+                    <SearchUsersBar
+                        webServerIP = {this.webServerIP}
+                        webServerPort={ this.webServerPort }
+                        fetchData = {this.fetchData }
+                        
+                    />
+                </div>
+               
+                    
                 <Dashboard
                         //isAdminPanel = {this.state.userLogged.isAdmin}
                         isAdmin = {this.state.adminInterface}
@@ -423,20 +443,21 @@ class App extends Component {
                         webServerIP = {this.webServerIP}
                         webServerPort = {this.webServerPort}
                 />
-                <div ref={ this.closeStatistics } className={ this.state.showStatistics ? "form_wrapper show_form" : "form_wrapper" }>
+                <div ref={ this.closeStatistics } className={ this.state.showStatistics ? "form_wrapper show_form stat" : "form_wrapper" }>
                     <Statistics
                         dataset={this.state.searchResult}
                         webServerIP = {this.webServerIP}
                         webServerPort={ this.webServerPort }
+                       
                     />
                 </div>
                 <Feed
+                    kindOfResult = {this.state.LastKindOfResult}
                     webServerIP = {this.webServerIP}
                     admin = {this.state.adminInterface}
                     userLoggedId = { this.state.userLogged._id}
                     webServerPort={ this.webServerPort }
-                    adsList={ this.state.searchResult }
-                    reportResult = { this.fetchSearchResult.bind(this)}
+                    data={ this.state.searchResult }
                     deleteAd = {this.deleteAd.bind(this)}
                     reportAd = {this.reportAd.bind(this)}
                 ></Feed>

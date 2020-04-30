@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
-
+import { Dropdown, DropdownButton, Form  } from 'react-bootstrap';
+import consts from '../consts';
 class SearchBar extends Component {
 
     state = {
@@ -12,6 +12,7 @@ class SearchBar extends Component {
         selectedCategory: null,
         selectedSubCategory: null,
         selectedRegion: null,
+        neighborsRegions: false,
         selectedProvince: null,
         showProvinces: false,
         showSubCategories: false,
@@ -33,6 +34,7 @@ class SearchBar extends Component {
         this.minPriceField = React.createRef();
         this.maxPriceField = React.createRef();
         this.searchField = React.createRef();
+        this.checkBox = React.createRef();
         this.setCategory = this.setCategory.bind(this);
         this.setSubCategory = this.setSubCategory.bind(this);
         this.setRegion = this.setRegion.bind(this);
@@ -77,6 +79,9 @@ class SearchBar extends Component {
             case this.maxPriceField.current:
                 var value = event.target.value != '' ? event.target.value : null;
                 this.setState({maxPriceValue: value});
+            case this.checkBox.current:
+                
+                this.setState({neighborsRegions: this.checkBox.current.checked});
         }
     }
 
@@ -147,19 +152,11 @@ class SearchBar extends Component {
         if(this.state.maxPriceValue != null){
             searchFields.params.max = this.state.maxPriceValue;
         }
-        console.log(searchFields);
-        this.sendData(searchFields);
+        if(this.state.neighborsRegions){
+            searchFields.params.nei = 1;
+        }
+        this.props.fetchData(consts.ADS, searchFields);
        
-    }
-
-    async sendData(searchFields){
-        await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/ads', searchFields).then(
-            (response) => {
-                    this.setState({searchResult: response.data});
-                    console.log(response.data);
-                    this.props.reportResult(this.state.searchResult);
-                }
-        );
     }
     cleanSearchFields(){
         this.setState({
@@ -170,8 +167,12 @@ class SearchBar extends Component {
             showSubCategories: false,
             showProvinces: false,
             searchString: null,
+            minPriceValue: null,
+            maxPriceValue: null
         });
         this.searchField.current.value = null;
+        this.minPriceField.current.value = null;
+        this.minPriceField.current.value = null;
     }
 
     render() {
@@ -202,7 +203,11 @@ class SearchBar extends Component {
                                     ) : null
                                 }
                             </DropdownButton>
-                            <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces ? "m-2" : "notDisplay" } title={this.state.selectedProvince != null ? this.state.selectedProvince.name : "Provinces"} >
+                            <div className={this.state.selectedRegion && !this.state.selectedProvince ? "custom-control custom-checkbox" : "notDisplay"}>
+                                <input ref= {this.checkBox} type="checkbox" className="custom-control-input" id="defaultUnchecked" checked={this.state.neighborsRegions} onChange={this.handleChange}></input>
+                                <label className="custom-control-label m-2" for="defaultUnchecked">Neighbors Regions</label>
+                            </div>
+                            <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces && !this.state.neighborsRegions ? "m-2" : "notDisplay" } title={this.state.selectedProvince != null ? this.state.selectedProvince.name : "Provinces"} >
                             {   (Array.isArray(this.state.provinces) && this.state.provinces.length) ? this.state.provinces.map(
                                     province =>
                                     <Dropdown.Item onClick={ this.setProvince } id={province._id} name={province.name}>{province.name} </Dropdown.Item>

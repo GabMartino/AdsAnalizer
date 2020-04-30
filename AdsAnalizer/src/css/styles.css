@@ -10,7 +10,7 @@
 @import "./components/ad.css";
 @import "./components/navbar.css";
 @import "./components/dashboard.css";
-
+@import "./components/statistics.css";
 
 /* PAGES */
 @import "./pages/App.css";

@@ -67,7 +67,7 @@ class Ad extends Component {
                             </div>
                             <div className="buttons">
                                 <button onClick={ () => this.props.deleteAd(this.state.id)} className={this.state.showDelete ? "delete": "notDisplay"} type="submit">Delete</button>
-                                <button onClick={ () => this.props.reportAd(this.state.id, true)} className={!this.props.admin && this.props.author.userId != this.props.userLoggedId? "report" : "notDisplay"} type="submit">Report</button>
+                                <button onClick={ () => this.props.reportAd(this.state.id, true)} className={!this.props.admin && this.props.author && this.props.author.userId != this.props.userLoggedId? "report" : "notDisplay"} type="submit">Report</button>
                                 <button onClick={ () => this.props.reportAd(this.state.id, false)}
                                             className={this.props.admin ? (this.props.reported > 0 ? "report" : "report disabled ") : "notDisplay"}
                                             type="submit">Remove Report</button>
@@ -92,7 +92,7 @@ class Ad extends Component {
                             </div>
                             <div className="author">
                                 <img src={ user } />
-                                {this.state.author.name}
+                                {this.state.author ? this.state.author.name : null }
                             </div>
                         </div>
                         <div className="line">
