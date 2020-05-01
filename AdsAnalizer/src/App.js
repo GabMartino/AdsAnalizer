@@ -97,11 +97,8 @@ class App extends Component {
                 const html = document.documentElement;
                 const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
                 const windowBottom = windowHeight + window.pageYOffset;
-                //console.log(windowBottom)
-                //console.log(docHeight)
-                //HAS TO BE IMPLEMENTED
-                if (Math.round(windowBottom - 1 )>=  docHeight ) {
-                  
+                if (Math.round(windowBottom - 1 ) >=  docHeight || Math.round(windowBottom) >=  docHeight ) {
+                   
                     let searchParams = this.state.lastSearchParams;
                     searchParams.params.pag += 1;
 
