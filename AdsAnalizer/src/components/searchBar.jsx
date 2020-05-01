@@ -80,7 +80,7 @@ class SearchBar extends Component {
                 var value = event.target.value != '' ? event.target.value : null;
                 this.setState({maxPriceValue: value});
             case this.checkBox.current:
-                
+
                 this.setState({neighborsRegions: this.checkBox.current.checked});
         }
     }
@@ -93,7 +93,7 @@ class SearchBar extends Component {
         await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/'+selectedCategory._id).then(
             (response) => {
                 this.setState({subcategories: response.data});
-                
+
                 }
         );
         this.setState({ showSubCategories: true });
@@ -113,7 +113,7 @@ class SearchBar extends Component {
         await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/geos/'+selectedRegion._id).then(
             (response) => {
                 this.setState({provinces: response.data});
-                
+
                 }
         );
         this.setState({ showProvinces: true });
@@ -156,7 +156,7 @@ class SearchBar extends Component {
             searchFields.params.nei = 1;
         }
         this.props.fetchData(consts.ADS, searchFields);
-       
+
     }
     cleanSearchFields(){
         this.setState({
@@ -214,10 +214,10 @@ class SearchBar extends Component {
                                     ) : null
                                 }
                             </DropdownButton>
-                            <input ref={ this.minPriceField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Min" aria-label="Search"/>
-                            <input ref={ this.maxPriceField } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Max" aria-label="Search"/>
+                            <input ref={ this.minPriceField } className="form-control mr-sm-2 tiny_text" onChange={this.handleChange} type="search" placeholder="Min" aria-label="Search"/>
+                            <input ref={ this.maxPriceField } className="form-control mr-sm-2 tiny_text" onChange={this.handleChange} type="search" placeholder="Max" aria-label="Search"/>
+                            <button className="btn btn-primary my-2 my-sm-0 m-2" onClick={e => {e.preventDefault();this.cleanSearchFields()}} type="submit">Clear</button>
                             <button className="btn btn-outline-success my-2 my-sm-0" onClick={e => {e.preventDefault();this.handleSearch()}} type="submit">Search</button>
-                            <button className="btn btn-outline-success my-2 my-sm-0 m-2" onClick={e => {e.preventDefault();this.cleanSearchFields()}} type="submit">Clear</button>
                         </form>
                 </nav>
             </React.Fragment>
