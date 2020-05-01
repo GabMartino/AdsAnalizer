@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import placeholder from '../assets/images/placeholder.png';
 
+import ExpandedAd from './ExpandedAd.jsx';
+
+import placeholder from '../assets/images/placeholder.png';
 import location from '../assets/icons/pin.png';
 import user from '../assets/icons/user.png';
 
 
 
+
 class Ad extends Component {
+
     state = {
         admin: false,
         textButton: "Buy now",
@@ -22,10 +26,15 @@ class Ad extends Component {
         showDelete: this.props.showDelete,
         reported: this.props.reported
      }
+
     constructor(props){
+
         super(props);
-        //this.showPhoneNumber = this.showPhoneNumber.bind(this);
+
+        this.closeExpand = React.createRef();
+
     }
+
     componentWillReceiveProps(props){
         this.setState({ admin: props.admin,
                         id: props.id,
@@ -38,18 +47,34 @@ class Ad extends Component {
                         author: props.author,
                         phoneNumber: props.phoneNumber,
                         showDelete: props.showDelete,
+                        isExpanded: false,
                         reported: props.reported});
         //this.setState(this.state);
     }
 
-    showPhoneNumber(){
-        if(this.state.textButton != "Buy now"){
-            this.setState({textButton: "Buy now"})
-            return;
-        }
-        this.setState({ textButton: this.state.phoneNumber});
+    componentDidMount(){
+        this.initListeners();
+    }
+
+    initListeners(){
+
+        this.closeExpand.current.addEventListener( "click", (event) => {
+            if( event.target === this.closeExpand.current ){
+                this.expand();
+            }
+        } )
 
     }
+
+    expand(){
+
+        this.setState({
+            isExpanded: !this.state.isExpanded
+        });
+
+    }
+
+
     render() {
         return (
 
@@ -99,9 +124,12 @@ class Ad extends Component {
                             <div className="price">
                                 {this.state.price}
                             </div>
-                            <button onClick={() =>this.showPhoneNumber()} className="btn btn-outline-success my-2 my-sm-0" type="submit" >{this.state.textButton}</button>
+                            <button onClick={() =>this.expand()} className="btn btn-outline-success my-2 my-sm-0" type="submit" >{this.state.textButton}</button>
                         </div>
                     </div>
+                </div>
+                <div ref={ this.closeExpand } className={ this.state.isExpanded ? "expandedAd_container expand" : "expandedAd_container" }>
+                    <ExpandedAd title={ this.state.title } body={ this.state.body } region={ this.state.region } province={ this.state.province } town={ this.state.town } price={ this.state.price } author={ this.state.author } phoneNumber={ this.state.phoneNumber }/>
                 </div>
             </div>
 

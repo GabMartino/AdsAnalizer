@@ -1,0 +1,73 @@
+.expandedAd_container{
+
+	height: 100%;
+	width: 100%;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: rgba( 0, 0, 0, 0.7 );
+	z-index: 1000;
+
+}
+
+.expandedAd_container.expand{
+	display: flex;
+}
+
+.expandedAd{
+
+	min-height: 550px;
+    min-width: 550px;
+    max-height: 90%;
+    background: #F5F5F5;
+    border-radius: 10px;
+    overflow: auto;
+
+}
+
+.expandedAd .title{
+
+	height: auto;
+	width: 100%;
+	padding: 30px;
+	background: #356859;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	color: #fff;
+	font-family: Cereal_Medium;
+	font-size: 1.2em;
+
+}
+
+.expandedAd .title p{
+	margin: 0;
+}
+
+.expandedAd .field{
+
+	height: auto;
+	width: 100%;
+	padding: 30px;
+	border-bottom: 1px solid #e0e0e0;
+
+}
+
+.expandedAd .field .label{
+
+	font-family: Cereal_Medium;
+	font-size: 0.7em;
+	color: rgba( 0, 0, 0, 0.6 );
+
+}
+
+.expandedAd .field p{
+
+		max-width: 400px;
+		font-family: Cereal_Book;
+		font-size: 0.9em;
+		color: rgba( 0, 0, 0, 1 );
+
+}

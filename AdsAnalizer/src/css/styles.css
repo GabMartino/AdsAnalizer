@@ -11,6 +11,8 @@
 @import "./components/navbar.css";
 @import "./components/dashboard.css";
 @import "./components/statistics.css";
+@import "./components/expandedAd.css";
+
 
 /* PAGES */
 @import "./pages/App.css";
