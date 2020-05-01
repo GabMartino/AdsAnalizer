@@ -18,12 +18,12 @@ class SearchUsersBar extends Component {
 
         super(props);
         this.handleChange = this.handleChange.bind(this);
-       
+
         this.searchField = React.createRef();
         this.checkBox = React.createRef();
         this.minNumber = React.createRef();
         this.setCategory = this.setCategory.bind(this);
-        
+
         this.cleanSearchFields = this.cleanSearchFields.bind(this);
 
     }
@@ -31,7 +31,7 @@ class SearchUsersBar extends Component {
         this.fetchData();
     }
 
-    async fetchData(){  
+    async fetchData(){
         axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/0'
         ).then(
             (response) => {
@@ -64,7 +64,7 @@ class SearchUsersBar extends Component {
                 pag: 0
             }
         };
-       
+
         if(this.state.selectedCategory != null){
            searchFields.params.cat = this.state.selectedCategory._id;
         }
@@ -75,7 +75,7 @@ class SearchUsersBar extends Component {
             searchFields.params.mnc = 1;
         }
         this.props.fetchData(consts.USERS, searchFields);
-       
+
     }
     cleanSearchFields(){
         this.setState({
@@ -92,9 +92,9 @@ class SearchUsersBar extends Component {
         return (
             <React.Fragment>
                 <nav className="navbar nav_2 navbar-expand-lg navbar-light">
-                        Users 
+                        Users
                         <form className="form-inline my-2 my-lg-0">
-                         
+
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory != null ? this.state.selectedCategory.name : "Categories"}>
                             {   (Array.isArray(this.state.categories) && this.state.categories.length) ? this.state.categories.map(
                                     category =>
@@ -102,16 +102,16 @@ class SearchUsersBar extends Component {
                                     ) : null
                                 }
                             </DropdownButton>
-                          
+
                             <div className="custom-control custom-checkbox">
                                 <input ref= {this.checkBox} type="checkbox" className="custom-control-input" id="exclusiveCheck" checked={this.state.exclusiveCat} onChange={this.handleChange}></input>
                                 <label className="custom-control-label m-2" for="exclusiveCheck">Exclusive Category</label>
                             </div>
-                          
-                            <input ref={ this.minNumber } className="form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Min" aria-label="Search"/>
-                           
+
+                            <input ref={ this.minNumber } className="tiny_text form-control mr-sm-2" onChange={this.handleChange} type="search" placeholder="Min" aria-label="Search"/>
+
+                            <button className="btn btn-primary my-2 my-sm-0 m-2" onClick={e => {e.preventDefault();this.cleanSearchFields()}} type="submit">Clear</button>
                             <button className="btn btn-outline-success my-2 my-sm-0" onClick={e => {e.preventDefault();this.handleSearch()}} type="submit">Search Users</button>
-                            <button className="btn btn-outline-success my-2 my-sm-0 m-2" onClick={e => {e.preventDefault();this.cleanSearchFields()}} type="submit">Clear</button>
                         </form>
                 </nav>
             </React.Fragment>

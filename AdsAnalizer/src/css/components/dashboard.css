@@ -18,6 +18,10 @@
 
 }
 
+.admin_mode #dashboard{
+	background: #202a35;
+}
+
 #dashboard.show{
 	display: flex;
 }

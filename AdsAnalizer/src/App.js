@@ -98,13 +98,13 @@ class App extends Component {
                 const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
                 const windowBottom = windowHeight + window.pageYOffset;
                 if (Math.round(windowBottom - 1 ) >=  docHeight || Math.round(windowBottom) >=  docHeight ) {
-                   
+
                     let searchParams = this.state.lastSearchParams;
                     searchParams.params.pag += 1;
 
                     this.fetchData(this.state.LastKindOfResult, searchParams);
                     this.setState({ lastSearchParams: searchParams});
-                    
+
                 }
 
             }, true);
@@ -157,21 +157,21 @@ class App extends Component {
             restAddress = '/stats/users';
         }
         this.setState({lastSearchParams: params});
-        
+
         await axios.get('http://'+this.webServerIP+':'+this.webServerPort+restAddress,params,{
             withCredentials: true,
         }).then((response) =>{
                 if(response.status == 200){
                     if(params && params.params.pag && params.params.pag > 0 && kindOfData == this.state.LastKindOfResult){
-                        
+
                         this.setState({ searchResult: this.state.searchResult.concat(response.data)});
                         console.log(this.state.searchResult);
                     }else{
                         this.setState({ searchResult: response.data,
                                         LastKindOfResult: kindOfData});
                     }
-                   
-                   
+
+
                 }else{
                     alert("Something's gone wrong");
                 }
@@ -179,8 +179,8 @@ class App extends Component {
           }).catch(function (error) {
                 console.error(error);
           });
-         
-        
+
+
     }
 
 
@@ -302,7 +302,7 @@ class App extends Component {
                 //console.log(response);
                 if(response.status == 200){
                     console.log("Logout Succeded.");
-                   
+
                 }else{
                     alert("Something's gone wrong");
                 }
@@ -419,18 +419,18 @@ class App extends Component {
                     webServerIP = {this.webServerIP}
                     webServerPort={ this.webServerPort }
                     fetchData = {this.fetchData }
-                  
+
                 />
-                <div className={ this.state.userIsLogged && this.state.adminInterface ? "" : "notDisplay" }>
+                <div className={ this.state.userIsLogged && this.state.adminInterface ? "user_bar" : "notDisplay" }>
                     <SearchUsersBar
                         webServerIP = {this.webServerIP}
                         webServerPort={ this.webServerPort }
                         fetchData = {this.fetchData }
-                        
+
                     />
                 </div>
-               
-                    
+
+
                 <Dashboard
                         //isAdminPanel = {this.state.userLogged.isAdmin}
                         isAdmin = {this.state.adminInterface}
@@ -445,7 +445,7 @@ class App extends Component {
                         dataset={this.state.searchResult}
                         webServerIP = {this.webServerIP}
                         webServerPort={ this.webServerPort }
-                       
+
                     />
                 </div>
                 <Feed
