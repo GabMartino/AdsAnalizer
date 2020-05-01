@@ -164,7 +164,12 @@ class AddPanel extends Component {
 
         return (
             <form class="add_panel">
-                <div className="title">Add Panel</div>
+                <div className="title">
+                <p>Add Panel</p>
+                <div className="interactions">
+                    <button type="submit" onClick={e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
+                </div>
+                </div>
                 <div className="content">
                     <div className="form-group">
                         <label htmlFor="exampleInputEmail1">Name</label>
@@ -211,9 +216,7 @@ class AddPanel extends Component {
                         <input ref={ this.adPrice } type="text" onChange={this.handleChange} className="form-control"  placeholder="Price"/>
                     </div>
                 </div>
-                <div className="interactions">
-                    <button type="submit" onClick={e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
-                </div>
+
             </form>
 
 

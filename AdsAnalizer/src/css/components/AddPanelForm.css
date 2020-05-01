@@ -2,11 +2,33 @@
 
 	min-height: 550px;
     min-width: 550px;
+	overflow: auto;
 
 }
 
 .form_wrapper form.signup .content{
 
 	height: auto;
+
+}
+
+.form_wrapper form.add_panel .title{
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+}
+
+.form_wrapper form.add_panel .title p{
+	margin: 0;
+}
+
+.form_wrapper form.add_panel .title .interactions{
+
+	width: auto;
+	position: relative;
+	paddiing: 10px;
+	font-size: 0.8em;
 
 }
