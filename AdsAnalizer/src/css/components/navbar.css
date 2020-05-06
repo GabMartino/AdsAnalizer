@@ -92,3 +92,11 @@
 .tiny_text{
 	max-width: 100px;
 }
+
+nav p.label{
+	margin: 0 20px;
+}
+
+.admin_mode nav p.label{
+	color: rgba( 255, 255, 255, 0.8 );
+}

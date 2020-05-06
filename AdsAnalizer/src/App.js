@@ -19,7 +19,7 @@ import consts from './consts';
 class App extends Component {
 
 
-    webServerPort = 815;
+    webServerPort = 8080;
     webServerIP = window.location.hostname;
     //webServerPort = 8080;
     //webServerIP = window.location.hostname;
@@ -381,16 +381,16 @@ class App extends Component {
     async reportAd(adId, value){
         if( !this.state.reportedAdInSession.includes(adId) || !value){
             const ad = this.state.searchResult.find( ad => ad._id == adId);
-           
+
             if(ad){
                 let params = {
                     report: value
                 }
-              
+
                 await axios.put('http://'+this.webServerIP+':'+this.webServerPort+'/ads/'+adId, params, {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
-    
+
                 }).then((response) =>{
                     console.log(response);
                     if(response.status == 200){
@@ -401,9 +401,9 @@ class App extends Component {
                     }else{
                             alert("Something's gone wrong");
                     }
-    
+
               }).catch(function (error) {
-                    
+
                     console.error(error);
               });
             }
@@ -411,7 +411,7 @@ class App extends Component {
         }else{
             alert("You've already reported this ad");
         }
-      
+
     }
 
     switchInterface(){
@@ -474,10 +474,10 @@ class App extends Component {
 
                     />
                 </div>
-                <div>
-                    <h2>
+                <div className="content_label">
+                    <p className="content_label">
                         {this.state.LastKindOfResult == consts.ADS ? (this.state.filter == "filter_flagged" ? "Flagged Ads:" : (this.state.filter == "filter_my_ads" ? "My Ads:": "Ads:"))  : "Users:"}
-                    </h2>
+                    </p>
                 </div>
                 <Feed
                     kindOfResult = {this.state.LastKindOfResult}

@@ -181,7 +181,7 @@ class SearchBar extends Component {
         return (
             <React.Fragment>
                 <nav className="navbar nav_2 navbar-expand-lg navbar-light">
-                        Search for Ads
+                        <p className="label">Search Ads</p>
                         <form className="form-inline my-2 my-lg-0">
                             <input ref={ this.searchField } className="form-control mr-sm-2"  onChange={this.handleChange} type="search" placeholder="Search" aria-label="Search"/>
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory != null ? this.state.selectedCategory.name : "Categories"}>
