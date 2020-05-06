@@ -17,7 +17,8 @@ class Dashboard extends Component {
 		//refs
 		this.toggleMyAddsRef = React.createRef();
         this.toggleFlaggedRef = React.createRef();
-		this.toggleStatisticsRef = React.createRef();
+        this.toggleStatisticsRef = React.createRef();
+        this.toggleUsersRef = React.createRef();
         this.fetchCounters = this.fetchCounters.bind(this);
     }
 
@@ -28,7 +29,6 @@ class Dashboard extends Component {
     async componentWillReceiveProps(props){
        this.setState({isAdmin: props.isAdmin});
        if(props.isAdmin){
-            console.log("............");
             let response = await this.fetchCounters(1);
             if( response )
                 var value = parseInt(response.value);
@@ -37,6 +37,14 @@ class Dashboard extends Component {
             if( response )
                 var value = parseInt(response.value);
                 this.setState({ numberOfAds: value});
+        }
+        if(props.clearDashboardSignal){
+            this.toggleFlaggedRef.current.classList.remove("checked");
+            this.toggleFlaggedRef.current.checked = false;
+            this.toggleMyAddsRef.current.classList.remove("checked");
+            this.toggleMyAddsRef.current.checked = false;
+            this.toggleUsersRef.current.classList.remove("checked");
+            this.toggleUsersRef.current.checked = false;
         }
     }
     async fetchCounters(value) {
@@ -81,6 +89,21 @@ class Dashboard extends Component {
                 this.props.applyFilter( null );
             }
 
+        } );
+        this.toggleUsersRef.current.addEventListener( "click", () => {
+
+            if(!this.toggleUsersRef.current.classList.contains("checked")){
+                this.toggleUsersRef.current.classList.add("checked");
+                this.toggleFlaggedRef.current.classList.remove("checked");
+                this.toggleFlaggedRef.current.checked = false;
+                this.toggleUsersRef.current.checked = true;
+                this.props.applyFilter( consts.FILTER_USERS );
+            }else{
+                this.toggleUsersRef.current.classList.remove("checked");
+                this.toggleUsersRef.current.checked = false;
+                this.props.applyFilter( null );
+            }
+
 		} );
 
 		this.toggleStatisticsRef.current.addEventListener( "click", () => {
@@ -91,24 +114,30 @@ class Dashboard extends Component {
 
     render() {
         return (
-            <div id="dashboard" className={ this.props.userIsLogged ? "show" : "" }>
-				<div className={!this.props.isAdmin ? "switch_wrapper" : "notDisplay"}>
-					<p>Mostra i miei annunci</p>
+            <div id="dashboard" className="show">
+				<div className={!this.props.isAdmin && this.props.userIsLogged? "switch_wrapper" : "notDisplay"}>
+					<p>Show my Ads</p>
 
 					<input ref={ this.toggleMyAddsRef } type="radio" name="filters" id="switchMyAdds" className="switch" />
 					<label htmlFor="switchMyAdds"></label>
 				</div>
-				<div className={this.props.isAdmin ? "switch_wrapper" : "notDisplay"}>
-					<p>Mostra annunci segnalati</p>
+				<div className={this.props.isAdmin && this.props.userIsLogged? "switch_wrapper" : "notDisplay"}>
+					<p>Show flagged Ads</p>
 
 					<input ref={ this.toggleFlaggedRef } type="radio" name="filters" id="switchFlagged" className="switch" />
 					<label htmlFor="switchFlagged"></label>
 				</div>
-				<button ref={ this.toggleStatisticsRef } className="btn btn-primary statistics" type="button" aria-expanded="false" aria-controls="collapseExample">Statistiche</button>
-                <div className={this.props.isAdmin ? "switch_wrapper" : "notDisplay"}>
-					<p>Numero utenti</p>
+                <div className={this.props.isAdmin && this.props.userIsLogged? "switch_wrapper" : "notDisplay"}>
+					<p>Show Users</p>
+
+					<input ref={ this.toggleUsersRef } type="radio" name="filters" id="switchUsers" className="switch" />
+					<label htmlFor="switchUsers"></label>
+				</div>
+				<button ref={ this.toggleStatisticsRef } className="btn btn-primary statistics" type="button" aria-expanded="false" aria-controls="collapseExample">Statistics on Ads</button>
+                <div className={this.props.isAdmin && this.props.userIsLogged? "switch_wrapper" : "notDisplay"}>
+					<p>Number of Users</p>
 					{this.state.numberOfUsers}
-                    <p>Numero annunci</p>
+                    <p>Number of Ads</p>
 					{this.state.numberOfAds}
 				</div>
             </div>

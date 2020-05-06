@@ -32,10 +32,12 @@ class AddPanel extends Component {
         categories: [],
         subcategories: [],
         provinces: [],
+        features: []
+        
     }
     componentWillReceiveProps(props){
         this.setState({actualUser: props.actualUser});
-        console.log("test" + props.actualUser);
+       
     }
     componentDidMount(){
         this.fetchData();
@@ -45,7 +47,7 @@ class AddPanel extends Component {
         axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/0'
         ).then(
             (response) => {
-                console.log(response);
+               
                 this.setState({categories: response.data});
                 }
         );
@@ -64,14 +66,15 @@ class AddPanel extends Component {
         await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/'+selectedCategory._id).then(
             (response) => {
                 this.setState({subcategories: response.data});
-
+                    console.log(this.state.subcategories);
                 }
         );
         this.setState({ showSubCategories: true });
     }
     setSubCategory(event){
         const selectedSubCategory = Array.isArray(this.state.subcategories) && this.state.subcategories.find(category => category._id === event.target.id);
-        this.setState({ selectedSubCategory: selectedSubCategory });
+        this.setState({ selectedSubCategory: selectedSubCategory,
+                            features: [] });
 
     }
     setProvince(event){
@@ -112,6 +115,23 @@ class AddPanel extends Component {
                 break;
         }
     }
+
+    addFeature(featureName, value, e){
+        let features = this.state.features;
+        const indexOfFeature = features.findIndex( f => f.name == featureName);
+        console.log(indexOfFeature);
+        if(indexOfFeature != -1 ){
+            features[indexOfFeature].value = value != null ? value : e.target.value;
+        }else{
+            let newFeature = {
+                name: featureName,
+                value: value
+            }
+            features.push(newFeature);
+            this.setState({ features: features});
+        }
+        
+    }
     handleSubmit(){
         if( this.state.title != "" && this.state.description != "" && this.state.selectedCategory != null){
             var actualDateTime = new Date();
@@ -131,7 +151,8 @@ class AddPanel extends Component {
                 },
                 geo: { region: this.state.selectedRegion,
                         province: this.state.selectedProvince,
-                        town: this.state.town}
+                        town: this.state.town},
+                features: this.state.features == [] ? null : this.state.features
 
             }
             this.sendData(this, newAd);
@@ -211,10 +232,28 @@ class AddPanel extends Component {
                         <label >Town</label>
                         <input ref={ this.town } type="text" onChange={this.handleChange} className="form-control"  placeholder="Town"/>
                     </div>
-                    <div className="form-group">
-                        <label >Price</label>
-                        <input ref={ this.adPrice } type="text" onChange={this.handleChange} className="form-control"  placeholder="Price"/>
-                    </div>
+                    {(this.state.selectedSubCategory && Array.isArray(this.state.selectedSubCategory.features) && this.state.selectedSubCategory.features.length) ? this.state.selectedSubCategory.features.map(
+                                (feature) =>{
+                                    if(feature.type == "list"){
+                                        return <div>
+                                                <label >{feature.name}</label>
+                                        <DropdownButton  className="m-2"  title={this.state.features.find(f => f.name == feature.name) ? this.state.features.find(f => f.name == feature.name).value : feature.name} >
+                                            {   (Array.isArray(feature.values) && feature.values.length) ? feature.values.map(
+                                                featureItem =>
+                                                <Dropdown.Item  onClick={ e => this.addFeature(feature.name,featureItem,e) } name={featureItem}>{featureItem} </Dropdown.Item>
+                                                ) : null
+                                            }
+                                        </DropdownButton>
+                                        </div>;
+                                    }else{
+                                       return  <div className="form-group">
+                                        <label >{feature.name}</label>
+                                        <input  type="text" onChange={ e => this.addFeature(feature.name, null, e)} className="form-control"  placeholder={feature.name}/>
+                                        </div> ;
+                                    }
+                                } 
+                                      
+                                ) : null}
                 </div>
 
             </form>

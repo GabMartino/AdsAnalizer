@@ -12,6 +12,7 @@ class LoginForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeOnEmail = this.handleChangeOnEmail.bind(this);
         this.handleChangeOnPassword = this.handleChangeOnPassword.bind(this);
+        this.validateEmail = this.validateEmail.bind(this);
     }
 
     state = {
@@ -27,15 +28,28 @@ class LoginForm extends Component {
     handleChangeOnPassword(event) {
         this.setState({password: event.target.value});
     }
-
+    validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
     handleSubmit(){
         let user = {
             'email': this.state.email,
             'pass': this.state.password
         }
-        this.props.doLogin(user);
-        this.setState({email: "",
-                        password: ""});
+        if(user.email == "" || user.pass == ""){
+            alert("Username or Password empty. Please fill the fields before Login.");
+        }else{
+            if(this.validateEmail(user.email)){
+                this.props.doLogin(user);
+                this.setState({email: "",
+                                password: ""});
+            }else{
+                alert("The email inserted is not valid.")
+            }
+         
+        }
+       
     }
 
 

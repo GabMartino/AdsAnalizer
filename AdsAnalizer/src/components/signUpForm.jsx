@@ -7,7 +7,8 @@ class SignUpForm extends Component {
         username: "",
         phoneNumber: "",
         email: "",
-        password: ""
+        password: "",
+        checkPassword: ""
      }
 
     constructor(props){
@@ -19,6 +20,7 @@ class SignUpForm extends Component {
         this.refPhoneNumberField = React.createRef();
         this.refEmailField = React.createRef();
         this.refPasswordField = React.createRef();
+        this.validateEmail = this.validateEmail.bind(this);
     }
 
     handleChange(event) {
@@ -34,8 +36,13 @@ class SignUpForm extends Component {
                 break;
             case this.refPasswordField.current:
                 this.setState({password: event.target.value});
+                break;
 
         }
+    }
+    validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
     }
     handleSubmit(){
 
@@ -44,6 +51,14 @@ class SignUpForm extends Component {
             "phone": this.state.phoneNumber,
             "email": this.state.email,
             "pass": this.state.password
+        }
+        if(!newUser.name || !newUser.email || !newUser.pass){
+            alert("Please fill all the fields.");
+            return;
+        }
+        if(!this.validateEmail(newUser.email)){
+            alert("Email address is not valid.");
+            return;
         }
         this.sendData(newUser);
         this.setState({ username: "",
@@ -56,11 +71,19 @@ class SignUpForm extends Component {
         await axios.post('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/users', data, {
             headers: { 'Content-Type': 'application/json' },
           }).then((response) =>{
-              console.log(response)
-              if(response.data == "ok"){
-                  this.props.doSignUp();
-              }
-          })
+                console.log(response);
+                if(response.status == 200 ){
+                    this.props.doSignUp();
+                }
+                    
+          }).catch(function (error) {
+            console.log(error.response);
+            if(error.response.status == 401){
+                alert("Email Address already used.");
+            }else{
+                alert("Sign up Error");
+            }
+      });
     }
 
 
@@ -72,12 +95,12 @@ class SignUpForm extends Component {
                 <div className="content">
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
-                        <input ref={ this.refUsernameField } type="text" value={this.state.username} onChange={this.handleChange} className="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter Username"/>
+                        <input ref={ this.refUsernameField } type="text" value={this.state.username} onChange={this.handleChange} className="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter Username" />
 
                     </div>
                     <div className="form-group">
                         <label htmlFor="email">Email address</label>
-                        <input ref= { this.refEmailField } type="text" value={this.state.email} onChange={this.handleChange} className="form-control"   id="email" aria-describedby="emailHelp" placeholder="Enter Enter email"/>
+                        <input ref= { this.refEmailField } type="text" value={this.state.email} onChange={this.handleChange} className="form-control"   id="email" aria-describedby="emailHelp" placeholder="Enter Enter email" />
                         <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                     </div>
                     <div className="form-group">
@@ -87,11 +110,11 @@ class SignUpForm extends Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="pass">Password</label>
-                        <input ref= { this.refPasswordField } type="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="pass" placeholder="Password"/>
+                        <input ref= { this.refPasswordField } type="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="pass" placeholder="Password" />
                     </div>
                 </div>
                 <div className="interactions">
-                    <button onClick= {e => {e.preventDefault();this.handleSubmit()}} className="btn btn-primary">Submit</button>
+                    <button onClick= {e => {e.preventDefault();this.handleSubmit()}} type="submit" className="btn btn-primary">Submit</button>
                 </div>
             </form>
 

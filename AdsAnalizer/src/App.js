@@ -19,8 +19,10 @@ import consts from './consts';
 class App extends Component {
 
 
-    webServerPort = 8080;
+    webServerPort = 815;
     webServerIP = window.location.hostname;
+    //webServerPort = 8080;
+    //webServerIP = window.location.hostname;
     state = {
         adminInterface: false,
         userLogged: {},
@@ -33,6 +35,7 @@ class App extends Component {
         LastKindOfResult: consts.ADS,
         filter: null,
         lastSearchParams: null,
+        reportedAdInSession: []
 
     }
 
@@ -57,7 +60,12 @@ class App extends Component {
     componentDidMount(){
         this.initListeners();
         //Fetch first ads
-        this.fetchData(consts.ADS, {params: {pag: 0 }});
+        let searchParams = {
+            params: {
+                pag: 0
+            }
+        };
+        this.fetchData(consts.ADS, searchParams);
 
         this.doLogin(null);
     }
@@ -131,6 +139,7 @@ class App extends Component {
                 pag: 0
             }
         };
+        let kindOfData = consts.ADS;
         if(this.state.filter == consts.FILTER_MY_ADS){//for ads of a user
             searchParams = {
                 params: {
@@ -143,9 +152,11 @@ class App extends Component {
                     rep: 1
                 }
             }
+        }else if(this.state.filter == consts.FILTER_USERS) {// for reported ads
+            kindOfData = consts.USERS;
         }
 
-        this.fetchData(consts.ADS, searchParams);
+        this.fetchData(kindOfData, searchParams);
 
 
     }
@@ -162,10 +173,9 @@ class App extends Component {
             withCredentials: true,
         }).then((response) =>{
                 if(response.status == 200){
-                    if(params && params.params.pag && params.params.pag > 0 && kindOfData == this.state.LastKindOfResult){
+                    if(params && params.params.pag && params.params.pag > 0 && kindOfData == this.state.LastKindOfResult && this.state.searchResult){
 
                         this.setState({ searchResult: this.state.searchResult.concat(response.data)});
-                        console.log(this.state.searchResult);
                     }else{
                         this.setState({ searchResult: response.data,
                                         LastKindOfResult: kindOfData});
@@ -255,7 +265,7 @@ class App extends Component {
             withCredentials: true
           }).then(function (response){
                 //console.log(response);
-                if(response.status == 200 && response.data != "notFound"){
+                if(response.status == 200 ){
                        // obj.setState({userLogged: response.data});
                         const cookies = new Cookies();
                         var name = cookies.get("name");
@@ -280,6 +290,7 @@ class App extends Component {
 
           }).catch(function (error) {
                 console.log(error);
+                alert("Username or Password not valid.");
           });
           return response;
 
@@ -368,35 +379,49 @@ class App extends Component {
         this.fetchData(consts.ADS, searchParams);
     }
     async reportAd(adId, value){
-
-        const ad = this.state.searchResult.find( ad => ad._id == adId);
-        console.log(ad)
-        if(ad){
-            let params = {
-                report: value
-            }
-            console.log(params)
-            await axios.put('http://'+this.webServerIP+':'+this.webServerPort+'/ads/'+adId, params, {
-                headers: { 'Content-Type': 'application/json' },
-                withCredentials: true
-
-            }).then(function (response){
-                console.log(response);
-                if(response.status == 200){
-                        console.log("Reporting Succeded.");
-                }else{
-                        alert("Something's gone wrong");
+        if( !this.state.reportedAdInSession.includes(adId) || !value){
+            const ad = this.state.searchResult.find( ad => ad._id == adId);
+           
+            if(ad){
+                let params = {
+                    report: value
                 }
-
-          }).catch(function (error) {
-                console.error(error);
-          });
+              
+                await axios.put('http://'+this.webServerIP+':'+this.webServerPort+'/ads/'+adId, params, {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+    
+                }).then((response) =>{
+                    console.log(response);
+                    if(response.status == 200){
+                        let reportedAdInSession = this.state.reportedAdInSession;
+                        reportedAdInSession.push(adId);
+                        this.setState({ reportedAdInSession:reportedAdInSession });
+                        console.log("Reporting Succeded.");
+                    }else{
+                            alert("Something's gone wrong");
+                    }
+    
+              }).catch(function (error) {
+                    
+                    console.error(error);
+              });
+            }
+            //this.fetchData(consts.ADS, null);
+        }else{
+            alert("You've already reported this ad");
         }
-        this.fetchData(consts.ADS, null);
+      
     }
 
     switchInterface(){
         this.setState({ adminInterface: !this.state.adminInterface});
+        if(!this.state.adminInterface){
+            this.fetchData(consts.ADS, null);
+        }
+        this.setState({clearDashboard: true });
+        this.setState({clearDashboard: false });
+        this.setState({filter: null});
     }
     render() {
 
@@ -432,6 +457,7 @@ class App extends Component {
 
 
                 <Dashboard
+                        clearDashboardSignal = { this.state.clearDashboard}
                         //isAdminPanel = {this.state.userLogged.isAdmin}
                         isAdmin = {this.state.adminInterface}
                         userIsLogged={ this.state.userIsLogged }
@@ -447,6 +473,11 @@ class App extends Component {
                         webServerPort={ this.webServerPort }
 
                     />
+                </div>
+                <div>
+                    <h2>
+                        {this.state.LastKindOfResult == consts.ADS ? (this.state.filter == "filter_flagged" ? "Flagged Ads:" : (this.state.filter == "filter_my_ads" ? "My Ads:": "Ads:"))  : "Users:"}
+                    </h2>
                 </div>
                 <Feed
                     kindOfResult = {this.state.LastKindOfResult}

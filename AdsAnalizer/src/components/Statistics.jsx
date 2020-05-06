@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Dropdown, DropdownButton, Tabs, Tab } from 'react-bootstrap';
 import BarChart from './barChart';
+import GeoChart from './geoChart';
+import HistogramChart from './HistogramChart';
 import consts from '../consts';
 
 class Statistics extends Component {
@@ -16,15 +18,19 @@ class Statistics extends Component {
         this.setRegion = this.setRegion.bind(this);
         this.setCategory = this.setCategory.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
+        this.setSubCategory = this.setSubCategory.bind(this);
     }
 
     state = {
-        dataset: null,
         selectedCategory: null,
         categories: [],
         selectedRegion: null,
+        showGeoChart: false,
         regions: [],
-
+        subcategories: [],
+        viewCharts: false,
+        selectedSubCategory: null,
+        showSubCategories: false,
         //first charts
         yValuesNumberOfAds: [],
         yValuesAveragePrices: [],
@@ -35,19 +41,26 @@ class Statistics extends Component {
 
         //chart for price distribution
         showPriceDistrChart: false,
-        yValuePriceDistr: [],
-        xAxisPriceDistr: [],
-        nameSeries3: "Price Distribution"
+        nameOfPriceDistributionChart: "",
+        histogramData: null
 
 
     }
     componentDidMount(){
         this.fetchData();
     }
-    setCategory(event){
+    async setCategory(event){
         const selectedCategory = Array.isArray(this.state.categories) && this.state.categories.find(category => category._id === event.target.id);
         this.setState({ selectedCategory: selectedCategory});
+        this.setState({ selectedSubCategory: null });
         //console.log(window.location.hostname);
+        await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/categories/'+selectedCategory._id).then(
+            (response) => {
+                this.setState({subcategories: response.data});
+
+                }
+        );
+        this.setState({ showSubCategories: true });
      
     }
     setRegion(event){
@@ -74,14 +87,18 @@ class Statistics extends Component {
         );
 
     }
+    setSubCategory(event){
+        const selectedSubCategory = Array.isArray(this.state.subcategories) && this.state.subcategories.find(category => category._id === event.target.id);
+        this.setState({ selectedSubCategory: selectedSubCategory });
 
-    handleSearch(PARAM, searchFieldsFromCharts){
+    }
+    async handleSearch(PARAM, searchFieldsFromCharts){
         let restParam = null;
         let searchFields = null;
         switch(PARAM){
 
             case consts.STAT_GEO : 
-                                restParam = this.state.selectedCategory ? this.state.selectedCategory._id : null;   
+                                restParam = this.state.selectedSubCategory ? this.state.selectedSubCategory._id : (this.state.selectedCategory ? this.state.selectedCategory._id : null);   
                                 if(!restParam) return;
                                 searchFields = {
                                     params: {
@@ -89,22 +106,36 @@ class Statistics extends Component {
                                     }
                                 };
                                 this.requireData("categories/" + restParam, this.state.selectedRegion ? searchFields : null, PARAM);
+                                this.setState({ viewCharts: true});
+                                this.setState({ showPriceDistrChart: false});
+                                if(this.state.selectedRegion){
+                                    this.setState({showGeoChart: true});
+                                }
                                 break;
 
             case consts.STAT_PRICE_DISTR:
                                 restParam = this.state.selectedCategory ? this.state.selectedCategory._id : null;   
                                 if(!restParam) return;
-
-                                let RegionSelected = this.state.regions.find( (region) => {
-                                        return (region.name === searchFieldsFromCharts ? region : null);
-                                    });
-                                    console.log("printing region id selected");
-                                    console.log(RegionSelected)
+                                // if is selected the price distribution will be of province
+                                let geoArea = null;
+                                if(this.state.selectedRegion){
+                                    console.log("await")
+                                    let provinces =  await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/geos/'+this.state.selectedRegion._id).then(
+                                        (response) => {
+                                                return response.data;
+                                            }
+                                    );
+                                    geoArea = provinces.find( (province) => province.name === searchFieldsFromCharts);
+                                }else{
+                                    geoArea = this.state.regions.find( (region) => region.name === searchFieldsFromCharts);
+                                }
+                                
                                 searchFields = {
                                     params: {
-                                        geo: RegionSelected._id
+                                        geo: geoArea._id
                                     }
                                 };
+                                this.setState({nameOfPriceDistributionChart: geoArea.name});
                                 this.requireData("categories/" + restParam + "/prices", searchFields, PARAM);
                                 break;
             
@@ -116,6 +147,7 @@ class Statistics extends Component {
     async requireData(restParam, searchFields, kindOfStat){
         await axios.get('http://'+this.props.webServerIP+':'+this.props.webServerPort+'/stats/'+restParam, searchFields).then(
             (response) => {
+                  
                     switch(kindOfStat){
                         case consts.STAT_GEO:
                                 let xAxis = response.data.map( object => object.name);
@@ -132,7 +164,8 @@ class Statistics extends Component {
                                 this.setState({ xAxisAveragePrices: xAxis});
                                 break;
                         case consts.STAT_PRICE_DISTR:
-                                console.log(response.data);
+                                this.setState({ showPriceDistrChart: true});
+                                this.setState({ histogramData: response.data});
                     }
                     
                 }
@@ -145,21 +178,43 @@ class Statistics extends Component {
         this.setState({
             selectedCategory: null,
             selectedRegion: null,
+            yValuesNumberOfAds: [],
+            yValuesAveragePrices: [],
+            xAxisNumberOfAds: [],
+            xAxisAveragePrices: [],
+            showGeoChart: false,
+            subcategories: [],
+            selectedSubCategory: null,
+            showSubCategories: false,
+            //chart for price distribution
+            showPriceDistrChart: false,
+            yValuePriceDistr: [],
+            xAxisPriceDistr: [],
+            viewCharts: false,
+             //chart for price distribution
+            nameOfPriceDistributionChart: "",
+            histogramData: null
         });
     }
     render() {
      
         return (
             <div >
-                 <div>
-                    {this.state.title}
+                <div>
+                   <h1>Statistics</h1> 
                 </div>
-                <nav className="navbar nav_2  navbar-light">
-                        <form className="statParam">
+                <nav className="navbar nav_2 navbar-expand-lg navbar-light">
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory != null ? this.state.selectedCategory.name : "Categories"}>
                             {   (Array.isArray(this.state.categories) && this.state.categories.length) ? this.state.categories.map(
                                     category =>
                                     <Dropdown.Item onClick={ this.setCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
+                                    ) : null
+                                }
+                            </DropdownButton>
+                            <DropdownButton id="dropdown-basic-button" className={this.state.showSubCategories ? "m-2" : "notDisplay" } title={this.state.selectedSubCategory != null ? this.state.selectedSubCategory.name : "Subcategories"}>
+                            {   (Array.isArray(this.state.subcategories) && this.state.subcategories.length) ? this.state.subcategories.map(
+                                    category =>
+                                    <Dropdown.Item onClick={ this.setSubCategory} id={category._id} name={category.name}>{category.name}</Dropdown.Item>
                                     ) : null
                                 }
                             </DropdownButton>
@@ -172,36 +227,71 @@ class Statistics extends Component {
                             </DropdownButton>
                             <button className="btn btn-outline-success my-2 my-sm-0" onClick={e => {e.preventDefault();this.handleSearch(consts.STAT_GEO)}} type="submit">Search</button>
                             <button className="btn btn-outline-success my-2 my-sm-0 m-2" onClick={e => {e.preventDefault();this.cleanSearchFields()}} type="submit">Clear</button>
-                        </form>
+                       
                 </nav>
               
                 <div >
-                    <Tabs defaultActiveKey="first" id="uncontrolled-tab-example" onSelect={this.handleSelect}>
-                        <Tab eventKey="first" title="Number Of Ads">
-                                <BarChart 
-                                    regionSelected = {this.state.selectedRegion != null}
-                                    yaxis= {this.state.yValuesNumberOfAds}
-                                    xaxis = {this.state.xAxisNumberOfAds}
-                                    nameSeries = {this.state.nameSeries1}
-                                    callStat = {this.handleSearch.bind(this)}
-                               />
-                        </Tab>
-                        <Tab eventKey="second" title="Average Price">
-                                <BarChart
-                                    regionSelected = {this.state.selectedRegion != null}
-                                    yaxis= {this.state.yValuesAveragePrices}
-                                    xaxis = {this.state.xAxisAveragePrices}
-                                    nameSeries = {this.state.nameSeries2}
-                                    callStat = {this.handleSearch.bind(this)}
-                               />
-                        </Tab>
-                    </Tabs>
-                    <div className={this.state.showPriceDistrChart ? "" : "notDisplay"}>
-                        <BarChart
+                    {this.state.viewCharts ? 
+                        <Tabs defaultActiveKey="first" id="uncontrolled-tab-example" onSelect={this.handleSelect}>
+                            <Tab eventKey="first" title="Number Of Ads">
+                                
+                                <Tabs defaultActiveKey="barchart" id="kindOfPlot">
+                                        <Tab eventKey="barchart" title="BARCHART">
+                                            <BarChart 
+                                                    title = { "Number of Ads" }
+                                                
+                                                    regionSelected = {this.state.selectedRegion != null}
+                                                    yaxis= {this.state.yValuesNumberOfAds}
+                                                    xaxis = {this.state.xAxisNumberOfAds}
+                                                    nameSeries = "Number of Ads"
+                                                    callStat = {this.handleSearch.bind(this)}
+                                            />
+                                        </Tab>
+                                        { this.state.showGeoChart ?   <Tab eventKey="geochart" title="GEOCHART" >
+                                            <GeoChart
+                                                    kind = { "NUM" }
+                                                    regionSelected = {this.state.selectedRegion != null}
+                                                    yaxis= {this.state.yValuesNumberOfAds}
+                                                    xaxis = {this.state.xAxisNumberOfAds}
+                                                    nameSeries = "Number of Ads"
+                                            />
+                                        </Tab> : null }
+
+                                </Tabs>
+                            </Tab>
+                            <Tab eventKey="second" title="Average Price">
+                                    <Tabs defaultActiveKey="barchart" id="kindOfPlot2">
+                                        <Tab eventKey="barchart" title="BARCHART">
+                                            <BarChart
+                                                    title = { "Average Price" }
+                                                
+                                                    regionSelected = {this.state.selectedRegion != null}
+                                                    yaxis= {this.state.yValuesAveragePrices}
+                                                    xaxis = {this.state.xAxisAveragePrices}
+                                                    nameSeries = "Average Price" 
+                                                    callStat = {this.handleSearch.bind(this)}
+                                            />
+                                        </Tab>
+                                        { this.state.showGeoChart ?   <Tab eventKey="geochart" title="GEOCHART" >
+                                            <GeoChart
+                                                    kind = { "AVG" }
+                                                    regionSelected = {this.state.selectedRegion != null}
+                                                    yaxis= {this.state.yValuesAveragePrices}
+                                                    xaxis = {this.state.xAxisAveragePrices}
+                                                    nameSeries = "Average Price" 
+                                            />
+                                        </Tab> : null }
+                                    
+
+                                    </Tabs>
+                            </Tab>
                             
-                            yaxis = {this.state.yValuePriceDistr}
-                            xaxis = {this.state.xAxisPriceDistr}
-                            nameSeries = {this.state.nameSeries3}
+                        </Tabs> : null}
+                    <div className={this.state.showPriceDistrChart ? "" : "notDisplay"}>
+                        <HistogramChart
+                            title = {"Price Distribution of " + this.state.nameOfPriceDistributionChart}
+                            kindOfChart = "Histogram" 
+                            data = {this.state.histogramData}
                                />
                     </div>
                     

@@ -129,7 +129,7 @@ class SearchBar extends Component {
     handleSearch(){
         let searchFields = {
             params: {
-
+                pag: 0
             }
         };
         if(this.state.searchString != null && this.state.searchString != ''){
@@ -168,11 +168,12 @@ class SearchBar extends Component {
             showProvinces: false,
             searchString: null,
             minPriceValue: null,
-            maxPriceValue: null
+            maxPriceValue: null,
+            neighborsRegions: false
         });
         this.searchField.current.value = null;
         this.minPriceField.current.value = null;
-        this.minPriceField.current.value = null;
+        this.maxPriceField.current.value = null;
     }
 
     render() {
@@ -180,6 +181,7 @@ class SearchBar extends Component {
         return (
             <React.Fragment>
                 <nav className="navbar nav_2 navbar-expand-lg navbar-light">
+                        Search for Ads
                         <form className="form-inline my-2 my-lg-0">
                             <input ref={ this.searchField } className="form-control mr-sm-2"  onChange={this.handleChange} type="search" placeholder="Search" aria-label="Search"/>
                             <DropdownButton id="dropdown-basic-button" className="m-2" title={this.state.selectedCategory != null ? this.state.selectedCategory.name : "Categories"}>

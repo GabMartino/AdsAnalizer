@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build &&  rm -rf C:\\Users\\gafir\\Desktop\\IS2\\task2is\\java\\annunci_html && mv build C:\\Users\\gafir\\Desktop\\IS2\\task2is\\java\\annunci_html",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

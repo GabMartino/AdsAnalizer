@@ -24,23 +24,29 @@ class PieChart extends Component {
         super(props);
         this.handleSelection = this.handleSelection.bind(this);
     }
-    componentWillReceiveProps(){
-        /* this.setState({callBack: this.props.callStat});
-        var i = 0;
-        let data = null;
-        if(this.props.regionSelected != undefined)
-            data = Array([!this.props.regionSelected ? "Regions" : "Provinces", this.props.nameSeries]);
-        else
-            data = Array(["Prices", this.props.nameSeries]);
+    componentWillReceiveProps(props){
+      if(props.data != null){
         
-        while(i < this.props.xaxis.length){
-            data.push(Array(this.props.xaxis[i], parseFloat(this.props.yaxis[i])));
-            i++;
-        }            
+        var data = [];
+        
+        if(props.kind == "CAT"){
+         
+          data = props.data.map( elem => {
+            return [elem.category_name, elem.count]
+          });
+         // data.unshift(['Category', 'Number of ads', 'Min Price', 'Max Price'])
+          data.unshift(['Category', 'Number of ads']);
+          console.log(data);
+        }else{
+          data = props.data.map( elem => {
+            return [elem.province_name, elem.count]
+          });
+          //data.unshift(['Province', 'Number of ads', 'Min Price', 'Max Price'])
+          data.unshift(['Province', 'Number of ads'])
+        }
+        this.setState({ data: data});
+      }
        
-        //data = google.visualization.arrayToDataTable(data, true);
-        this.setState({data: data});
-          */
     }
 
     handleSelection(rowIndex){
@@ -52,20 +58,16 @@ class PieChart extends Component {
         return ( 
                 <div className={"my-pretty-chart-container"}>
                     <Chart
-                    chartType="PieChart"
-                    loader={<div>Loading Chart</div>}
-                    data={[
-                      ['Task', 'Hours per Day'],
-                      ['Work', 11],
-                      ['Eat', 2],
-                      ['Commute', 2],
-                      ['Watch TV', 2],
-                      ['Sleep', 7],
-                    ]}
-                    options={{
-                      title: 'My Daily Activities',
-                    }}
-                    rootProps={{ 'data-testid': '1' }}
+                        width={'600px'}
+                        height={'300px'}
+                        chartType="PieChart"
+                        loader={<div>Loading Chart</div>}
+                        data={this.state.data}
+                        options={{
+                          title: this.props.name,
+                          pieSliceText: 'label'
+                        }}
+                    
                     />
                 </div>
           

@@ -23,9 +23,10 @@ class Feed extends Component {
             <div id="feed">
                 
                 { Array.isArray(this.state.data) && this.state.data.length ? this.state.data.map( item => {
-                console.log(this.props.kindOfResult == consts.ADS )
+              
                 if( this.props.kindOfResult == consts.ADS ){
                         return <Ad
+                                item = {item}
                                 admin = {this.props.admin}
                                 id = {item._id}
                                 body={item.body}
@@ -48,6 +49,8 @@ class Feed extends Component {
                         name = {item.username}
                         numAds = {item.num_ads}
                         phone = {item.phone}
+                        webServerIP = {this.props.webServerIP}
+                        webServerPort={ this.props.webServerPort }
                     
                     />
 

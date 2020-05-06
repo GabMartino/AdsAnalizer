@@ -12,8 +12,9 @@ import user from '../assets/icons/user.png';
 class Ad extends Component {
 
     state = {
+        item : this.props.item,
         admin: false,
-        textButton: "Buy now",
+        textButton: "Expand",
         id: this.props.id,
         title: this.props.title,
         body: this.props.body,
@@ -36,7 +37,8 @@ class Ad extends Component {
     }
 
     componentWillReceiveProps(props){
-        this.setState({ admin: props.admin,
+        this.setState({ item: props.item,
+                        admin: props.admin,
                         id: props.id,
                         title: props.title,
                         body: props.body,
@@ -90,16 +92,7 @@ class Ad extends Component {
                             <div className="title">
                                 { this.state.title }
                             </div>
-                            <div className="buttons">
-                                <button onClick={ () => this.props.deleteAd(this.state.id)} className={this.state.showDelete ? "delete": "notDisplay"} type="submit">Delete</button>
-                                <button onClick={ () => this.props.reportAd(this.state.id, true)} className={!this.props.admin && this.props.author && this.props.author.userId != this.props.userLoggedId? "report" : "notDisplay"} type="submit">Report</button>
-                                <button onClick={ () => this.props.reportAd(this.state.id, false)}
-                                            className={this.props.admin ? (this.props.reported > 0 ? "report" : "notDisplay") : "notDisplay"}
-                                            type="submit">Remove Report</button>
-                                <div>
-                                    {this.state.admin && this.state.reported ? this.state.reported : null }
-                                </div>
-                            </div>
+                            
                         </div>
                         <div className="line">
                             <div className="description">
@@ -129,7 +122,26 @@ class Ad extends Component {
                     </div>
                 </div>
                 <div ref={ this.closeExpand } className={ this.state.isExpanded ? "expandedAd_container expand" : "expandedAd_container" }>
-                    <ExpandedAd title={ this.state.title } body={ this.state.body } region={ this.state.region } province={ this.state.province } town={ this.state.town } price={ this.state.price } author={ this.state.author } phoneNumber={ this.state.phoneNumber }/>
+                    <ExpandedAd 
+                                deleteAd = { this.props.deleteAd}
+                                reportAd = { this.props.reportAd}
+                                item = { this.state.item }// this should replace all the data below, for future refactoring
+                                title={ this.state.title } 
+                                body={ this.state.body } 
+                                userLoggedId = {this.props.userLoggedId}
+                                region={ this.state.region } 
+                                province={ this.state.province } 
+                                town={ this.state.town } 
+                                price={ this.state.price } 
+                                author={ this.state.author } 
+                                phoneNumber={ this.state.phoneNumber }
+                                deleteAd = { this.props.deleteAd}
+                                reportAd = { this.props.reportAd }
+                                admin = { this.props.admin }
+                                reported = { this.props.reported }
+                                id = { this.props.id}
+                                showDelete = { this.props.showDelete }
+                                />
                 </div>
             </div>
 
