@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios';
 import ExpandedUser from './ExpandedUser'
-import placeholder from '../assets/images/placeholder.png';
+import user_placeholder from '../assets/icons/user.png';
 import location from '../assets/icons/pin.png';
 import user from '../assets/icons/user.png';
 
@@ -19,7 +19,7 @@ class User extends Component {
     constructor(props){
         super(props);
 
-        
+
         this.closeExpand = React.createRef();
     }
     componentDidMount(){
@@ -68,11 +68,11 @@ class User extends Component {
     render() {
         return (
 
-            <div className="ad_tile">
+            <div className="ad_tile user_tile">
                 <div className="img">
-                    <img src={ placeholder } alt="Generic placeholder image"/>
+                    <img src={ user_placeholder } alt="Generic user image"/>
                 </div>
-               
+
                 <div className="content">
                     <div className="info primary">
                         <div className="line">
@@ -83,14 +83,14 @@ class User extends Component {
                         <div className="line">
                             <div className="description">
                                 Number of Ads :{ this.state.numAds }
-                                
+
 
                             </div>
-                            
+
                         </div>
                     </div>
                     <div ref={ this.closeExpand } className={ this.state.isExpanded ? "expandedAd_container expand" : "expandedAd_container" }>
-                        <ExpandedUser  
+                        <ExpandedUser
                                 data = {this.state.data}
                                 idUser = {this.props.idUser}
                                 name = {this.props.name}
@@ -98,7 +98,7 @@ class User extends Component {
                                 phone = {this.props.phone}
                                     />
                     </div>
-                    
+
                     <div className="info secondary">
                         <div className="line">
                             <div className="author">
@@ -108,7 +108,7 @@ class User extends Component {
                             <button onClick={() =>{this.fetchData();this.expand(); }} className="btn btn-outline-success my-2 my-sm-0" type="submit" >Expand</button>
                         </div>
                     </div>
-                </div>            
+                </div>
             </div>
 
          );

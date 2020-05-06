@@ -80,7 +80,7 @@ class Ad extends Component {
     render() {
         return (
 
-            <div className="ad_tile">
+            <div className={!this.props.admin && this.props.author && this.props.author.userId != this.props.userLoggedId ? "ad_tile" : "ad_tile my_add"}>
                 <div className="img">
                     <img src={ placeholder } alt="Generic placeholder image"/>
                 </div>
@@ -92,7 +92,7 @@ class Ad extends Component {
                             <div className="title">
                                 { this.state.title }
                             </div>
-                            
+
                         </div>
                         <div className="line">
                             <div className="description">
@@ -122,18 +122,18 @@ class Ad extends Component {
                     </div>
                 </div>
                 <div ref={ this.closeExpand } className={ this.state.isExpanded ? "expandedAd_container expand" : "expandedAd_container" }>
-                    <ExpandedAd 
+                    <ExpandedAd
                                 deleteAd = { this.props.deleteAd}
                                 reportAd = { this.props.reportAd}
                                 item = { this.state.item }// this should replace all the data below, for future refactoring
-                                title={ this.state.title } 
-                                body={ this.state.body } 
+                                title={ this.state.title }
+                                body={ this.state.body }
                                 userLoggedId = {this.props.userLoggedId}
-                                region={ this.state.region } 
-                                province={ this.state.province } 
-                                town={ this.state.town } 
-                                price={ this.state.price } 
-                                author={ this.state.author } 
+                                region={ this.state.region }
+                                province={ this.state.province }
+                                town={ this.state.town }
+                                price={ this.state.price }
+                                author={ this.state.author }
                                 phoneNumber={ this.state.phoneNumber }
                                 deleteAd = { this.props.deleteAd}
                                 reportAd = { this.props.reportAd }
