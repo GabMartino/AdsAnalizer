@@ -30,7 +30,7 @@ class ExpandedAd extends Component {
 						<button onClick={ () => this.props.reportAd(this.props.id, true)} className={!this.props.admin && this.props.author && this.props.author.userId != this.props.userLoggedId? "report" : "notDisplay"} type="submit">Report</button>
 						<button onClick={ () => this.props.reportAd(this.props.id, false)}
 									className={this.props.admin ? (this.props.reported > 0 ? "report" : "notDisplay") : "notDisplay"}
-									type="submit">Remove Report</button>
+									type="submit">Undo Report</button>
 						<div>
 							{this.props.admin && this.props.reported ? this.props.reported : null }
 						</div>
