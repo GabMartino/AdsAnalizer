@@ -114,7 +114,7 @@ class Statistics extends Component {
                                 break;
 
             case consts.STAT_PRICE_DISTR:
-                                restParam = this.state.selectedCategory ? this.state.selectedCategory._id : null;
+                restParam = this.state.selectedSubCategory ? this.state.selectedSubCategory._id : (this.state.selectedCategory ? this.state.selectedCategory._id : null);
                                 if(!restParam) return;
                                 // if is selected the price distribution will be of province
                                 let geoArea = null;

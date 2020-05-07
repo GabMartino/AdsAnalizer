@@ -28,16 +28,7 @@ class Feed extends Component {
                         return <Ad
                                 item = {item}
                                 admin = {this.props.admin}
-                                id = {item._id}
-                                body={item.body}
-                                title={item.subject}
-                                region= {item.geo && item.geo.region ? item.geo.region.value : null}
-                                province= {item.geo && item.geo.province? item.geo.province.shortName : null}
-                                town= {item.geo && item.geo.town? item.geo.town.value : null }
-                                price= {Array.isArray(item.features) && item.features.length ? item.features[0].value : null}
-                                author={item.advertiser ? item.advertiser : null }
                                 userLoggedId = {this.props.userLoggedId}
-                                phoneNumber ={item.advertiser ? item.advertiser.phone : null}
                                 reported= {item.report ? item.report : 0}
                                 showDelete = {item.advertiser && parseInt(item.advertiser.userId) == parseInt(this.props.userLoggedId) || this.props.admin}
                                 deleteAd = { this.props.deleteAd}

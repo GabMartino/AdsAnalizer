@@ -407,7 +407,31 @@ class App extends Component {
                     console.error(error);
               });
             }
-            //this.fetchData(consts.ADS, null);
+            let searchParams = {
+                params: {
+                    pag: 0
+                }
+            };
+            if(this.state.filter == consts.FILTER_MY_ADS){//for ads of a user
+                searchParams = {
+                    params: {
+                        uid: this.state.userLogged._id
+                    }
+                }
+            }else if(this.state.filter == consts.FILTER_FLAGGED) {// for reported ads
+                searchParams = {
+                    params: {
+                        rep: 1
+                    }
+                }
+            }else if(this.state.filter == consts.FILTER_FLAGGED) {// for users
+                searchParams = {
+                    params: {
+                        rep: 1
+                    }
+                }
+            }
+            this.fetchData(consts.ADS, searchParams);
         }else{
             alert("You've already reported this ad");
         }

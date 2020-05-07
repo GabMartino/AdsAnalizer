@@ -48,7 +48,7 @@ class ExpandedAd extends Component {
 					<p className="label">DESCRIPTION</p>
 					<p>{ this.props.body }</p>
 				</div>
-				{ this.props.item.features.map( (features) => {
+				{ this.props.features.map( (features) => {
 					if( features.name != "Prezzo"){
 						return <div className="field">
 									<p className="label">{features.name}</p>
@@ -59,7 +59,7 @@ class ExpandedAd extends Component {
 				})}
 				<div className="field">
 					<p className="label">CONTACT</p>
-					<p>{ this.props.phoneNumber }</p>
+					<p>{this.props.author} : { this.props.phoneNumber }</p>
 				</div>
             </div>
 

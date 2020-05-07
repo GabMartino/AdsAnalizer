@@ -22,7 +22,8 @@ class HistogramChart extends Component {
             data.unshift(['Price', 'Number Of Ads']);
             this.setState({data: data});
             //this.forceUpdate();
-            console.log(data);
+            console.log(props.title);
+            
         }
     }
     render() { 
@@ -34,22 +35,27 @@ class HistogramChart extends Component {
                         options={{
                             legend:  {position: 'none'},
                             title: this.props.title,
-                        
+                            hAxis: {
+                                title: 'Price',
+                              },
+                              vAxis: {
+                                title: 'Number Of Ads',
+                              },
                         }}
                     />
                     <div>
                         Information
                         <div>
-                            {"Min Price" +   this.props && this.props.data ? this.props.data.min : null}
+                            Min Price: {this.props && this.props.data ? this.props.data.min : null}
                         </div>
                         <div>
-                            {"Max Price" + this.props &&  this.props.data ? this.props.data.max : null}
+                            Max Price: {this.props &&  this.props.data ? this.props.data.max : null}
                         </div>
                         <div>
-                            {"Average Price" + this.props &&  this.props.data ? this.props.data.avg : null}
+                            Average Price: {this.props &&  this.props.data ? this.props.data.avg : null}
                         </div>
                         <div>
-                           { "Number of Ads" + this.props &&  this.props.data ? this.props.data.count : null}
+                            Number of Ads: {this.props &&  this.props.data ? this.props.data.count : null}
                         </div>
                     </div>
                 </div>

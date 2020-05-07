@@ -207,7 +207,7 @@ class SearchBar extends Component {
                             </DropdownButton>
                             <div className={this.state.selectedRegion && !this.state.selectedProvince ? "custom-control custom-checkbox" : "notDisplay"}>
                                 <input ref= {this.checkBox} type="checkbox" className="custom-control-input" id="defaultUnchecked" checked={this.state.neighborsRegions} onChange={this.handleChange}></input>
-                                <label className="custom-control-label m-2" for="defaultUnchecked">Neighbors Regions</label>
+                                <label className="custom-control-label m-2 " for="defaultUnchecked">Neighbors Regions</label>
                             </div>
                             <DropdownButton id="dropdown-basic-button" className={this.state.showProvinces && !this.state.neighborsRegions ? "m-2" : "notDisplay" } title={this.state.selectedProvince != null ? this.state.selectedProvince.name : "Provinces"} >
                             {   (Array.isArray(this.state.provinces) && this.state.provinces.length) ? this.state.provinces.map(

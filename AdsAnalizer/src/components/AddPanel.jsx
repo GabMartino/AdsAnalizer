@@ -13,6 +13,7 @@ class AddPanel extends Component {
         this.adTitle = React.createRef();
         this.adDescription = React.createRef();
         this.adPrice = React.createRef();
+        this.town = React.createRef();
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.setSubCategory = this.setSubCategory.bind(this);
@@ -73,9 +74,8 @@ class AddPanel extends Component {
     }
     setSubCategory(event){
         const selectedSubCategory = Array.isArray(this.state.subcategories) && this.state.subcategories.find(category => category._id === event.target.id);
-        this.setState({ selectedSubCategory: selectedSubCategory,
-                            features: [] });
-
+        this.setState({ selectedSubCategory: selectedSubCategory});
+        this.setState({ features: []});
     }
     setProvince(event){
         const selectedProvince = Array.isArray(this.state.provinces) && this.state.provinces.find(province => province._id === event.target.id);
@@ -107,11 +107,8 @@ class AddPanel extends Component {
             case this.adDescription.current:
                 this.setState({description: event.target.value});
                 break;
-            case this.adPrice.current:
-                this.setState({price: event.target.value});
-                break;
             case this.town.current:
-                this.setState({setTown: event.target.value});
+                this.setState({setTown: { value: event.target.value}});
                 break;
         }
     }
@@ -133,7 +130,7 @@ class AddPanel extends Component {
         
     }
     handleSubmit(){
-        if( this.state.title != "" && this.state.description != "" && this.state.selectedCategory != null){
+        if( this.state.title != "" && this.state.description != "" && this.state.selectedCategory != null && this.state.selectedSubCategory != null){
             var actualDateTime = new Date();
             actualDateTime = actualDateTime.getFullYear() + "-" + actualDateTime.getMonth() + "-" + actualDateTime.getDay() + " " +
                                 actualDateTime.getHours() + ":" + actualDateTime.getMinutes() + ":" + actualDateTime.getSeconds();
@@ -141,20 +138,29 @@ class AddPanel extends Component {
                 subject: this.state.title,
                 body: this.state.description,
                 date: actualDateTime,
-                features: [{ name: "Prezzo", value: parseFloat(this.state.price)}],
-                category:  this.state.selectedCategory,
+                features: this.state.features,
+                category:  this.state.selectedSubCategory,
                 advertiser: {
                     name: this.state.actualUser.name,
                     phone: this.state.actualUser.phone,
                     userId: this.state.actualUser._id
 
                 },
-                geo: { region: this.state.selectedRegion,
-                        province: this.state.selectedProvince,
-                        town: this.state.town},
+                geo: { region: {
+                                id: this.state.selectedRegion._id,
+                                value: this.state.selectedRegion.name
+                                },
+                    
+                        province: {
+                            id: this.state.selectedProvince._id,
+                            value: this.state.selectedProvince.name,
+                            shortName: this.state.selectedProvince.shortName
+                        },
+                        town: this.state.setTown},
                 features: this.state.features == [] ? null : this.state.features
 
             }
+            console.log(newAd);
             this.sendData(this, newAd);
             this.props.showAdd(false);
         }else{

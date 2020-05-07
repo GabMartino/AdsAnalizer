@@ -45,9 +45,11 @@ class GeoChart extends Component {
                         chartType="GeoChart"
                         loader={<div>Loading Chart</div>}
                         data={ this.state.data }
+                        
                         options={{
                           pieSliceText: 'label',  
                           region: 'IT',
+                          resolution:"provinces",
                           displayMode: 'markers',
                           colorAxis: { colors: ['green', 'blue'] },
                         }}

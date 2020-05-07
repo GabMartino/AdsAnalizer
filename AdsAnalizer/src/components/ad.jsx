@@ -15,17 +15,9 @@ class Ad extends Component {
         item : this.props.item,
         admin: false,
         textButton: "Expand",
-        id: this.props.id,
-        title: this.props.title,
-        body: this.props.body,
-        region: this.props.region,
-        province: this.props.province,
-        town: this.props.town,
-        price: this.props.price,
-        author: this.props.author,
-        phoneNumber: this.props.phoneNumber,
         showDelete: this.props.showDelete,
-        reported: this.props.reported
+        reported: this.props.reported,
+        isExpanded: false
      }
 
     constructor(props){
@@ -39,15 +31,6 @@ class Ad extends Component {
     componentWillReceiveProps(props){
         this.setState({ item: props.item,
                         admin: props.admin,
-                        id: props.id,
-                        title: props.title,
-                        body: props.body,
-                        region: props.region,
-                        province: props.province,
-                        town: props.town,
-                        price: props.price,
-                        author: props.author,
-                        phoneNumber: props.phoneNumber,
                         showDelete: props.showDelete,
                         isExpanded: false,
                         reported: props.reported});
@@ -80,7 +63,7 @@ class Ad extends Component {
     render() {
         return (
 
-            <div className={!this.props.admin && this.props.author && this.props.author.userId != this.props.userLoggedId ? "ad_tile" : "ad_tile my_add"}>
+            <div className={ this.props.item.advertiser.userId && this.props.item.advertiser.userId == this.props.userLoggedId ? "ad_tile my_add" : "ad_tile "}>
                 <div className="img">
                     <img src={ placeholder } alt="Generic placeholder image"/>
                 </div>
@@ -90,13 +73,13 @@ class Ad extends Component {
                     <div className="info primary">
                         <div className="line">
                             <div className="title">
-                                { this.state.title }
+                                { this.state.item.subject }
                             </div>
 
                         </div>
                         <div className="line">
                             <div className="description">
-                                { this.state.body }
+                                { this.state.item.body }
                             </div>
 
                         </div>
@@ -106,16 +89,16 @@ class Ad extends Component {
                         <div className="line">
                             <div className="location">
                                 <img src={ location } />
-                                <b>{ this.state.province } { this.state.town != null ? this.state.town : null } </b>
+                                <b>{ this.props.item.geo ? (this.props.item.geo.province ? this.props.item.geo.province.shortName : null) : null }  { this.props.item.geo ? (this.props.item.geo.town ? this.props.item.geo.town.value : null ) : null } </b>
                             </div>
                             <div className="author">
                                 <img src={ user } />
-                                {this.state.author ? this.state.author.name : null }
+                                {this.state.item.advertiser ? this.state.item.advertiser.name : null }
                             </div>
                         </div>
                         <div className="line">
                             <div className="price">
-                                {this.state.price}
+                                {Array.isArray(this.state.item.features) && this.state.item.features.length ? this.state.item.features[0].value : null}
                             </div>
                             <button onClick={() =>this.expand()} className="btn btn-outline-success my-2 my-sm-0" type="submit" >{this.state.textButton}</button>
                         </div>
@@ -125,21 +108,21 @@ class Ad extends Component {
                     <ExpandedAd
                                 deleteAd = { this.props.deleteAd}
                                 reportAd = { this.props.reportAd}
-                                item = { this.state.item }// this should replace all the data below, for future refactoring
-                                title={ this.state.title }
-                                body={ this.state.body }
+                                features = { this.state.item.features }// this should replace all the data below, for future refactoring
+                                title={ this.state.item.subject }
+                                body={ this.state.item.body }
                                 userLoggedId = {this.props.userLoggedId}
-                                region={ this.state.region }
-                                province={ this.state.province }
-                                town={ this.state.town }
-                                price={ this.state.price }
-                                author={ this.state.author }
-                                phoneNumber={ this.state.phoneNumber }
+                                region={ this.state.item.geo.region.name ? this.state.item.geo.region.name : this.state.item.geo.region.value}
+                                province={ this.state.item.geo.province.shortName  }
+                                town={ this.state.item.geo.town.value }
+                                price={ this.state.item.features[0].value }
+                                author={ this.state.item.advertiser.name }
+                                phoneNumber={ this.state.item.advertiser.phone }
                                 deleteAd = { this.props.deleteAd}
                                 reportAd = { this.props.reportAd }
                                 admin = { this.props.admin }
                                 reported = { this.props.reported }
-                                id = { this.props.id}
+                                id = { this.state.item._id}
                                 showDelete = { this.props.showDelete }
                                 />
                 </div>
