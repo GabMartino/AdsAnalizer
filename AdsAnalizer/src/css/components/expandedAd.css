@@ -85,3 +85,8 @@
 		color: rgba( 0, 0, 0, 1 );
 
 }
+
+.my-pretty-chart-container text{
+	font-family: Cereal_Bold;
+    font-size: 0.6em;
+}
